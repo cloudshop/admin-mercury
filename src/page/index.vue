@@ -43,6 +43,7 @@ export default {
 };
 </script>
 <style >
+
 .index-con {
     height: 100%;
     width: 100%;
