@@ -150,8 +150,8 @@ export default {
 }
 
 .grid-content {
-  max-width: 260px;
-  min-width: 260px;
+  max-width: 280px;
+  min-width: 280px;
   border-radius: 4px;
   min-height: 36px;
   padding: 20px;
