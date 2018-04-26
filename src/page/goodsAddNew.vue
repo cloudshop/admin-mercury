@@ -11,39 +11,36 @@
       </el-col>
     </el-row>
     <div class="goodcontent" style="margin:20px 0;">
-      <classi-fication :type1.sync="type1" :type2.sync="type2" :type3.sync="type3"> </classi-fication>
-      <div class="goods" style="margin:20px 0;">
-      <span>商品品牌：</span>
-      <el-input class="goodsinput" v-model="goodsBrand" placeholder="请输入商品名称"></el-input>
-    </div>
-    </div>
-    <div class="goodcontent">
       <h3>商品基本信息</h3>
+      <classi-fication :type1.sync="type1" :type2.sync="type2" :type3.sync="type3"> </classi-fication>
+     <!--  <div class="goods" style="margin:20px 0;">
+        <span>商品品牌：</span>
+        <el-input class="goodsinput" v-model="goodsBrand" placeholder="请输入商品名称"></el-input>
+      </div> -->
       <div class="goods">
         <span>商品名称：</span>
-        <el-input class="goodsinput" v-model="goodsName" placeholder="请输入商品名称"></el-input>
+        <el-input class="goodsinput" v-model.trim="goodsName" placeholder="请输入商品名称"></el-input>
       </div>
       <div class="goods">
         <span>商品价格：</span>
-        <el-input-number v-model="goodsPrice" :min="0.00" :max="999999" label="描述文字"></el-input-number>
-        <span style="margin-left:20px;">元</span>
+        <el-input-number v-model="goodsPrice" :min="0.0" :max="9999999" label="描述文字"></el-input-number>
+        <span style="margin-left:20px;">元</span> <span>此价格必须是0.01-9999999之间的数字，且不能大于市场价，此价格为商品的实际销售价。</span>
       </div>
       <div class="goods" style="align-items: flex-start;" v-for="(item,index) in goodsClass">
         <span style="margin-top:8px;">商品规格：</span>
-        <el-input class="goodsspec" v-model="item.attr" @change="createGoodsList" clearable placeholder="如颜色"></el-input>
+        <el-input class="goodsspec" v-model.trim="item.attr" @change="createGoodsList(item.attr)" @blur="checkInput(item.attr)"   clearable   placeholder="如颜色"></el-input>
         <div class="goodstages">
           <el-tag style="margin-right:10px;margin-bottom:10px;" :key="tag" v-for="tag in item.attrValue" closable :disable-transitions="false" @close="removeTag(index,tag)">
             {{tag}}
           </el-tag>
-          <el-input style="margin-bottom:10px;width:100px" class="input-new-tag" v-if="item.flag" v-model="item.inputValue" placeholder="请输入内容" size="small" @keyup.enter.native="addNewTag(index,item.inputValue)" @blur="addNewTag(index,item.inputValue)">
+          <el-input style="margin-bottom:10px;width:100px" class="input-new-tag" v-if="item.flag" v-model.trim="item.inputValue" placeholder="请输入内容" size="small" @keyup.enter.native="addNewTag(index,item.inputValue)"  @blur="addNewTag(index,item.inputValue)" >
           </el-input>
-          <el-button v-else class="button-new-tag" size="small" @click="showInput(index)">+ 添加标签</el-button>
+          <el-button v-else class="button-new-tag" size="small"  @click="showInput(index)">+ 添加标签</el-button>
         </div>
         <el-button type="danger" size="small" style="margin:0 20px;" @click="deleteSpec(index)">删除规格</el-button>
       </div>
       <el-row type="flex" class="row-bg" justify="center">
         <el-button type="primary" :disabled="goodsClass.length===2" @click="addSpec">添加商品规格</el-button>
-        <!-- <el-button type="primary" style="margin-left:20px;" @click="createGoodsList">生成商品列表</el-button> -->
       </el-row>
       <div class="goods">
         <table class="newclass" width="100%">
@@ -53,21 +50,22 @@
               <th width="18%">商品价格</th>
               <th width="18%">让利</th>
               <th width="18%">库存</th>
-              <th width="18%">商家货号</th>
+              <th width="18%">商品编号</th>
             </tr>
           </thead>
           <tbody>
+            <!-- 商品单价、让利、库存、货号列表 -->
             <tr v-for="(item,index) in goodsList">
               <td>{{item.attrValue}}</td>
               <td v-if="item.AnotherValue ">{{item.AnotherValue}}</td>
               <td>
-                <input type="number" class="goodsinput" v-model.trim="item.price" min="0.00" @blur="checkPrice(item.skuPrice)" placeholder="商品单价" />
+                <input type="number" class="goodsinput" v-model.trim="item.skuPrice" min="0.00" @blur="checkPrice(item.skuPrice)" placeholder="商品单价" />
               </td>
               <td>
                 <input type="text" class="goodsinput" disabled="true" placeholder="请输入内容" />
               </td>
               <td>
-                <input type="number" class="goodsinput" v-model.trim="item.skuCount" min="0" placeholder="商品库存" />
+                <input type="number" class="goodsinput" v-model.trim="item.skuCount" min="0" @blur="goddsTotal(item,index)" placeholder="商品库存" />
               </td>
               <td>
                 <input type="text" class="goodsinput" v-model.trim="item.skuCode" placeholder="商品货号" />
@@ -82,58 +80,61 @@
           <template slot="append">件</template>
         </el-input>
       </div>
-      <div class="goods">
+      <!--  <div class="goods">
         <span>商品货号：</span>
         <el-input class="goodsinput" v-model="goodsNumber" placeholder="请输入商品货号"></el-input>
-      </div>
+      </div> -->
       <div class="goods">
         <span>商品图片：</span>
         <el-upload class="avatar-uploader" action="http://cloud.eyun.online:9080/file/api/ossUpload" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-          <img v-if="mainimageUrl" :src="mainimageUrl" class="avatar">
+          <img v-if="showMainimage" :src="showMainimage" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </div>
-      <p class="mainds">上传商品默认主图，如多规格值时默认使用该图或分规格上传各规格主图；支持jpg、jif、png格式上传或从图片空间中选择，<span>建议使用尺寸800×800像素以上
-            、大小不超过1M的正方形图片，</span>上传后的图片将会自动保存在图片空间的默认分类中。</p>
+      <p class="mainds">上传商品默认主图，如多规格值时默认使用该图或分规格上传各规格主图；支持jpg、jif、png格式上传或从图片空间中选择，<span>建议使用尺寸800×800像素以上、大小不超过1M的正方形图片，</span>上传后的图片将会自动保存在图片空间的默认分类中。</p>
       <!-- <div v-show="active==2"> -->
-      <div >
-        <h3>商品详情描述</h3>
-        <div class="goods">
-          <span>商品描述：</span>
-          <div class="imgrule">
-            <p>1、基本要求</p>
-            <li>(1)手机详情总体大小：图片+文字，图片不超过20张，文字不超过500字；</li>
-            <li>建议：所有图片都是宝贝相关图片。</li>
-            <p>2、图片大小要求：</p>
-            <li>(1)建议使用宽度480～620像素、高度小于960像素的图片；</li>
-            <li>(2)格式为：JPG\JPEG\GIF\PNG；</li>
-            <li>举例：可以上传一张宽度为480，高度为960像素，格式为JPEG的图片</li>
-          </div>
-        </div>
-        <div class="goodimg ">
-          <quill-editor :upload-url="uploadUrl" @input="captureVal" @focus="onEditorFocus($event)"></quill-editor>
+      <h3>商品详情描述</h3>
+      <div class="goods">
+        <span>商品描述：</span>
+        <div class="imgrule">
+          <p>1、基本要求</p>
+          <li>(1)手机详情总体大小：图片+文字，图片不超过20张，文字不超过500字；</li>
+          <li>建议：所有图片都是宝贝相关图片。</li>
+          <p>2、图片大小要求：</p>
+          <li>(1)建议使用宽度480～620像素、高度小于960像素的图片；</li>
+          <li>(2)格式为：JPG\JPEG\GIF\PNG；</li>
+          <li>举例：可以上传一张宽度为480，高度为960像素，格式为JPEG的图片</li>
         </div>
       </div>
-      <h3>支付方式</h3>
+      <div class="goodimg ">
+        <quill-editor ref="newEditor" :options="newOption" style="height: 300px; margin-bottom: 54px" v-model="editorContent">
+        </quill-editor>
+        <div class="addimage">
+          <el-upload class="avatar-uploader" action="http://cloud.eyun.online:9080/file/api/ossUpload" :show-file-list="false" :on-success="uploadDescribe" :before-upload="beforeUploadDescribe">
+            <el-button type="primary">添加图片</el-button>
+          </el-upload>
+        </div>
+      </div>
+     <!--  <h3>支付方式</h3>
       <div class="goods">
         <el-checkbox-group v-model="payList">
           <el-checkbox label="余额支付"></el-checkbox>
-          <el-checkbox label="微信"></el-checkbox>
-          <el-checkbox label="支付宝 C"></el-checkbox>
+          <el-checkbox label="微信" disabled></el-checkbox>
+          <el-checkbox label="支付宝" disabled></el-checkbox>
         </el-checkbox-group>
-      </div>
+      </div> -->
       <h3>商品物流信息</h3>
-      <div class="goods">
-        <span>所在地：</span>
-        <!-- <el-cascader :options="options" v-model="goodsAddrs" @change="selectAddrs"> -->
-        <!-- <el-cascader  v-model="goodsAddrs" > -->
-        <!-- </el-cascader> -->
-      </div>
+      <!-- <div class="goods"> -->
+      <!-- <span>所在地：</span> -->
+      <!-- <el-cascader :options="options" v-model="goodsAddrs" @change="selectAddrs"> -->
+      <!-- <el-cascader  v-model="goodsAddrs" > -->
+      <!-- </el-cascader> -->
+      <!-- </div> -->
       <div class="goods">
         <span>运费：</span>
         <el-input-number class="goodsinput" :min="1" :max="10" label="描述文字" v-model="goodsFreight">
         </el-input-number>
-        <span>元</span>
+        <span style="margin-left:20px;">元</span>
       </div>
       <h3>其他信息</h3>
       <div class="goods">
@@ -141,7 +142,7 @@
         <el-input class="goodsinput" v-model="goodsOther" placeholder="请填写内容"></el-input>
       </div>
     </div>
-    <div class="goodcontent">
+    <div class="goodcontent" v-show="false">
       <h3>上传商品图片</h3>
       <div class="goods">
         <span>商品1：</span>
@@ -154,102 +155,165 @@
       </div>
     </div>
     <el-row type="flex" class="row-bg" justify="center">
-      <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
+      <el-button style="margin-top: 12px;" type="primary" @click="next">下一步</el-button>
     </el-row>
   </div>
 </template>
 <script type="text/ecmascript-6">
 // 导入富文本编辑器模板
-import quillEditor from '../components/quillEditor'
+// import quillEditor from '../components/quillEditor'
+import { quillEditor } from 'vue-quill-editor'
+import Quill from 'quill'
 import classiFication from '../components/classiFication'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 export default {
   name: "goodsAddNew",
-  components: { quillEditor,classiFication },
+  components: { quillEditor, classiFication },
   data() {
     return {
-      goodsBrand:'',//商品品牌
-      type1: '', //选择一级分类
-      type2: '', //选择二级分类
-      type3: '', //选择三级分类
-      firstCategory: '', //一级分类
-      secondCategory: '', //二级&&三级分类
-      secondIndex: '', //二级分类下标
-      thirdCategory: '', //二级&&三级分类
+      // goodsBrand: '', //商品品牌
+      type1: 0, //选择一级分类
+      type2: 0, //选择二级分类
+      type3: 0, //选择三级分类
+      // firstCategory: '', //一级分类
+      // secondCategory: '', //二级&&三级分类
+      // secondIndex: '', //二级分类下标
+      // thirdCategory: '', //二级&&三级分类
       goodsList: [],
       selectedGoods: ['zujian', 'data', 'tag'], //选择商品分类
       goodsName: '', //商品名
       goodsPrice: 0, //商品价格
-      goodsNumber: '', //商品货号
+      goodsNumber: 0, //商品货号
+      showMainimage: '',
       mainimageUrl: '', //商品图片 默认主图链接
-      payList: [], //商品支付方式
-      goodsAddrs: [], //商品所在地
+      // payList: ['余额支付'], //商品支付方式
+      // goodsAddrs: [], //商品所在地
       goodsFreight: 0, //商品运费
       goodsOther: '', //商品其他信息
-      goodsDescribe: '', //商品描述
+      // goodsDescribe: '', //商品描述
       uploadUrl: 'http://127.0.0.1:9120/', //富文本编辑器里面的图片上传地址
       contents: '', //富文本编辑器里面的内容
       //商品规格 标签
       goodsClass: [{
-        attr: '红色',
+        attr: '',
         flag: '',
-        attrValue: ['标签1', '标签2', '标签3']
-      }, {
-        attr: '蓝色色',
-        flag: '',
-        attrValue: ['标签3', '标签4', '标签5']
+        attrValue: ['例:白色', '例:黑色']
       }],
       flag: 0,
       active: 1,
       loading: false, //是显示加载
       dialogImageUrl: '',
       dialogVisible: false,
-      fileList: []
+      fileList: [],
+      progress: false,
+      editorContent: '',//商品图文描述文本
+      newOption: {
+        placeholder: '请输添加商品图、文描述',
+        history: {
+          delay: 100,
+          maxStack: 100,
+          userOnly: false
+        },
+        modules: {
+          toolbar: [
+            [{ 'size': ['small', 'large', 'huge'] }],
+            ['bold', 'italic', 'underline'],
+            ['blockquote'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'font': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }]
+          ]
+        }
+      }
     }
   },
   // 数据发生改变
   watch: {
-    type1(val){
+    type1(val) {
       console.log(val)
     },
-    type2(val){
+    type2(val) {
       console.log(val)
     },
-    type3(val){
+    type3(val) {
       console.log(val)
     }
   },
   // 创建完毕状态(里面是操作)
   created() {
-    
+
   },
   mounted() {
-   
+
   },
   computed: {
 
   },
   // 里面的函数只有被调用才会执行
   methods: {
+    uploadDescribe(res, file) {
+      let length = this.$refs.newEditor.quill.getSelection();
+      var index = 0;
+      if (length != null) {
+        index = length.index
+      }
+      this.$refs.newEditor.quill.insertEmbed(index, 'image', res[0])
+    },
+    beforeUploadDescribe(file) {
+      const isJPEG = file.type === 'image/jpeg';
+      const isJPG = file.type === 'image/jpg';
+      const isPNG = file.type === 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPEG && !isJPG && !isPNG) {
+        this.$message.error('上传图片只能是 JPEG、JPG、PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!');
+      }
+      // return isJPEG && isJPG && isPNG && isLt2M;
+    },
+    
+    goddsTotal() {
+      let num = this.goodsList.reduce((total, item) => {
+        var nums = Number.parseInt(item.skuCount)
+        if (Number.isNaN(nums)) {
+          nums = 0;
+        }
+        total += nums
+        return total
+      }, 0)
+      this.goodsNumber = num
+    },
     checkPrice(val) {
-      if (val < 0) {
+      console.log(val)
+      if (val <= 0) {
         this.$message.error("最小价格不能小于0元");
         return false
       }
     },
-
+    checkInput(val){
+       const reg = /^\s*|\s*/g;
+      let values = val.replace(reg,'');
+      if(!values ){
+        this.$message.error("请填写商品规格");
+        return false
+      }
+    },
     // 生成商品列表
-    createGoodsList() {
+    createGoodsList(val) {
       let that = this;
       let arr = [];
       if (that.goodsClass.length === 1) {
         let val = that.goodsClass[0].attrValue;
         for (let i = 0; i < val.length; i++) {
           let obj = Object.create(null);
-          obj.attr=that.goodsClass[0].attr;
+          obj.attr = that.goodsClass[0].attr;
           obj.attrAnother = '';
           obj.AnotherValue = '';
           obj.skuCount = '',
-          obj.skuPrice = '';
+            obj.skuPrice = '';
           obj.transfer = '';
           obj.skuCode = '';
           obj.attrValue = val[i];
@@ -263,7 +327,7 @@ export default {
 
           for (let j = 0; j < val2.length; j++) {
             let obj = Object.create(null);
-            obj.attr=that.goodsClass[0].attr;
+            obj.attr = that.goodsClass[0].attr;
             obj.attrAnother = that.goodsClass[1].attr;
             obj.AnotherValue = val2[j];
             obj.skuCount = '',
@@ -278,14 +342,14 @@ export default {
 
       }
       that.goodsList = arr;
-      console.log(that.goodsList)
+      // console.log(that.goodsList)
       arr = []
     },
     //删除标签
     removeTag(index, tag) {
 
       this.goodsClass[index].attrValue.splice(this.goodsClass[index].attrValue.indexOf(tag), 1);
-      console.log(this.goodsClass[index].attrValue);
+      // console.log(this.goodsClass[index].attrValue);
       this.createGoodsList();
     },
     //添加标签
@@ -293,7 +357,7 @@ export default {
       let inputValue = val;
       if (inputValue && !this.goodsClass[index].attrValue.includes(inputValue)) {
         this.goodsClass[index].attrValue.push(inputValue);
-        console.log(this.goodsClass[index].attrValue)
+        // console.log(this.goodsClass[index].attrValue)
       }
       this.createGoodsList();
       this.goodsClass[index].flag = false;
@@ -318,41 +382,40 @@ export default {
     },
     //上传商品主图成功回调
     handleAvatarSuccess(res, file) {
-      this.mainimageUrl = URL.createObjectURL(file.raw);
+      this.showMainimage = URL.createObjectURL(file.raw);
+      this.mainimageUrl = res[0];
+      // console.log(this.mainimageUrl)
     },
     //上传商品主图之前操作
     beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg';
+      const isJPEG = file.type === 'image/jpeg';
+      const isJPG = file.type === 'image/jpg';
+      const isPNG = file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+      if (!isJPEG && !isJPG && !isPNG) {
+        this.$message.error('上传图片只能是 JPEG、JPG、PNG 格式!');
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.$message.error('上传图片大小不能超过 2MB!');
       }
-      return isJPG && isLt2M;
+      // return isJPG && isLt2M;
     },
     //选择商品地址
     selectAddrs(value) {
       this.goodsAddrs = value;
-      console.log(this.goodsAddrs);
+      // console.log(this.goodsAddrs);
     },
     //获取富文本编辑器里面的内容
     captureVal(val) {
       this.contents = val;
     },
     onEditorFocus() {},
-    next() {
-      if (this.active++ > 3) this.active = 0;
-    },
-    // 商品描述图片提交方法
-    submit: function() {},
+    
     // submitUpload() {
     //   this.$refs.upload.submit();
     // },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
     },
     // handlePreview(file) {
     //   console.log(file);
@@ -362,7 +425,50 @@ export default {
       this.dialogVisible = true;
     },
     slelectlist() {
-      console.log(this.goodsAddrs)
+      // console.log(this.goodsAddrs)
+    },
+    // 商品描述图片提交方法
+    submit: function() {
+      //提交前 对所有的数据进行校验
+      // if(!this.type1 && !this.type2 && !this.type3){
+      //   this.$message.error("请选择商品分类！");
+      //   return false
+      // }
+      if (!this.goodsName) {
+        this.$message.error("请填写商品名称！");
+        return false
+      } else if (!this.goodsPrice && typeof(this.goodsPrice) === 'number') {
+        this.$message.error("请填写商品价格！");
+        return false
+      } else if (!this.mainimageUrl) {
+        this.$message.error("请填加商品默认主图！");
+        return false
+      } else if (!this.editorContent) {
+        this.$message.error("请填加商品默认主图！");
+        return false
+      }
+      let url = 'http://cloud.eyun.online:9080/product/api/product/publish';
+       //创建提交data对象
+      let data = Object.create(null);
+      data.productName = this.goodsName //商品名称
+      data.listPrice = this.goodsPrice //商品价格
+      data.mainImage = this.mainimageUrl //商品默认主图链接
+      data.description = this.editorContent //商品图图文描述
+      // data.paymentType = this.payList.join(',') //商品支付方式
+      data.freight     = this.goodsFreight //商品物流信息 （运费）
+      data.attr     = this.goodsList //商品列表
+      this.$axios.post(url,data).then((res)=>{
+        console.log(res.data)
+        this.$message.success('上传成功');
+      }).catch((err)=>{
+        this.$message.error("上传失败，请检查填写内容！");
+        return false
+      })
+    },
+    //点击下一步进行 提交
+    next() {
+        this.submit();
+      if (this.active++ > 3) this.active = 0;
     }
   }
 };
@@ -576,10 +682,11 @@ export default {
   display: block;
 }
 
-.chociseactive{
+.chociseactive {
   background: #8792af;
   color: #fff;
 }
+
 
 
 /* Table Head */
@@ -624,6 +731,22 @@ export default {
 .newclass tbody tr:hover {
   background: #80c7fe;
   color: #fff;
+}
+
+.addimage {
+  width: 100%;
+  /*height: 30px;*/
+  text-align: center;
+  /*line-height: 30px;*/
+  /*background: #ccc;*/
+  margin: 0 auto;
+}
+
+.addimage .avatar-uploader {
+  border: none;
+  display: inline-block;
+  /*width: 100%!important;*/
+  /*height: 100%!important;*/
 }
 
 </style>
