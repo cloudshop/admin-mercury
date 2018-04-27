@@ -3,8 +3,8 @@
         <div class="logobox">后台管理平台</div>
         <el-submenu index="2" class="submenu">
             <template slot="title">admin</template>
-            <el-menu-item index="2-1">设置</el-menu-item>
-            <el-menu-item @click="content()" index="2-2">个人中心</el-menu-item>
+            <!-- <el-menu-item index="2-1">设置</el-menu-item> -->
+            <!-- <el-menu-item @click="content()" index="2-2">个人中心</el-menu-item> -->
             <el-menu-item @click="exit()" index="2-3">退出</el-menu-item>
         </el-submenu>
     </el-menu>
@@ -39,9 +39,9 @@ export default {
                 });
         },
         // 测试状态管理
-        content() {
-            this.$root.Bus.$emit("eventName", "1111");
-        }
+        // content() {
+        //     this.$root.Bus.$emit("eventName", "1111");
+        // }
     }
 };
 </script>
