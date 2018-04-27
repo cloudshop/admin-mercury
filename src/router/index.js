@@ -14,6 +14,10 @@ const sllerIndex    = r => require.ensure([], () => r(require('@/page/sllerIndex
 const goodsListPage = r => require.ensure([], () => r(require('@/page/goodsListPage')), 'goodsListPage');
 // 添加商品
 const goodsAddNew   = r => require.ensure([], () => r(require('@/page/goodsAddNew')), 'goodsAddNew');
+// 全部订单
+const allOrder   = r => require.ensure([], () => r(require('@/page/allOrder')), 'allOrder');
+//发货页面
+const sendGoods   = r => require.ensure([], () => r(require('@/page/sendGoods')), 'sendGoods');
 // import login from '@/page/login';
 // 注册
 // import register from '@/page/register';
@@ -27,7 +31,7 @@ const goodsAddNew   = r => require.ensure([], () => r(require('@/page/goodsAddNe
 // 添加商品
 // import goodsAddNew from '@/page/goodsAddNew';
 // 增加编辑
-import addedit from '@/page/addedit';
+// import addedit from '@/page/addedit';
 // 错误
 import error from '@/page/error';
 // 401
@@ -36,7 +40,7 @@ import errorf from '@/page/401';
  * 下面为演示组件，后期去掉
  */
 // 管理
-import management from '@/components/management';
+// import management from '@/components/management';
 // 分页 
 import paging from '@/components/paging';
 // 轮播图
@@ -95,18 +99,18 @@ export default new Router({
     }, 
     {
         path: '/index',
-        name: '组件',
+        name: '订单管理',
         component: index,
         iconCls: 'el-icon-menu',
         children: [{
-            path: '/addedit',
-            name: '增加编辑',
-            component: addedit
+            path: '/allOrder',
+            name: '全部订单',
+            component: allOrder
         }, 
         {
-            path: '/management',
-            name: '管理',
-            component: management
+            path: '/sendGoods',
+            name: '发货',
+            component: sendGoods
         }]
     }, 
     {
