@@ -22,7 +22,7 @@
       </div>
       <div class="goods">
         <span>商品价格：</span>
-        <el-input-number v-model="goodsPrice" :min="0.0" :max="9999999" label="描述文字"></el-input-number>
+        <input v-model.trim="goodsPrice" class="base-input" :keyup.up="IsNumberCheck(goodsPrice)"  placeholder="请输入金额"  />
         <span style="margin-left:20px;">元</span> <span style="font-size:12px;color:rgb(162, 162, 162);">此价格必须是0.01-9999999之间的数字，且不能大于市场价，此价格为商品的实际销售价。</span>
       </div>
       <div class="goods" style="align-items: flex-start;" v-for="(item,index) in goodsClass">
@@ -81,7 +81,7 @@
       </div>
       <div class="goods">
         <span>商品图片：</span>
-        <el-upload class="avatar-uploader" :action="ossUploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+        <el-upload class="avatar-uploader"   :action="ossUploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
           <img v-if="showMainimage" :src="showMainimage" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -104,7 +104,7 @@
         <quill-editor ref="newEditor" :options="newOption" style="height: 300px; margin-bottom: 54px" v-model="editorContent">
         </quill-editor>
         <div class="addimage">
-          <el-upload class="avatar-uploader" action="ossUploadUrl" :show-file-list="false" :on-success="uploadDescribe" :before-upload="beforeUploadDescribe">
+          <el-upload class="avatar-uploader" style="border:none!important" :action="ossUploadUrl" :show-file-list="false" :on-success="uploadDescribe" :before-upload="beforeUploadDescribe">
             <el-button type="primary">添加图片</el-button>
           </el-upload>
         </div>
@@ -225,7 +225,9 @@ export default {
   },
   // 数据发生改变
   watch: {
-
+    // goodsPrice(cal){
+    //   console.log(val)
+    // }
   },
   // 创建完毕状态(里面是操作)
   created() {
@@ -239,7 +241,17 @@ export default {
   },
   // 里面的函数只有被调用才会执行
   methods: {
-
+    IsNumberCheck(val){
+      var that =this
+      var reg = /[^\d]/g;
+      // console.log(val.replace(/[^\d]/g,''))
+      if(reg.test(val)){
+        console.log(that[val])
+      }
+      // if(!val){
+      //   console(123)
+      // }
+    },
     uploadDescribe(res, file) {
       let length = this.$refs.newEditor.quill.getSelection();
       var index = 0;
@@ -746,7 +758,13 @@ export default {
   border-radius: 4px;
   border: 1px solid #ccc;
 }
-
+.base-input{
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc; 
+}
 .newclass th,
 .newclass td {
   padding: 8px 4px;
