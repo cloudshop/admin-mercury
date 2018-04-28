@@ -197,8 +197,8 @@ export default {
           }, 2000);
           this.editFormVisible = false;
         }).catch((err) => {
-          console.log(err);
-          this.$message.error("提交失败！");
+          console.log(err.response.data);
+          this.$message.error(err.response.data.title);
         })
 
       });

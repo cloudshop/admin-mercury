@@ -13,7 +13,7 @@ module.exports = {
         proxyTable: {
             '/api': {
                     target: 'http://cloud.eyun.online:9080/api',
-                    changeOrigin: true
+                    changeOrigin: true,
                     pathRewrite: { "^/api": "" }
             }
         },
