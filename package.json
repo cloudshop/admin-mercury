@@ -10,8 +10,10 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "api-uaa": "^0.0.2",
     "axios": "^0.18.0",
     "element-ui": "^2.3.2",
+    "simple-oauth2": "^1.5.2",
     "vue": "^2.5.2",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.0.1",
