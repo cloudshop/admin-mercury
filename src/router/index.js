@@ -106,43 +106,47 @@ export default new Router({
             path: '/allOrder',
             name: '全部订单',
             component: allOrder
-        }, 
-        {
-            path: '/sendGoods',
-            name: '发货',
-            component: sendGoods
-        }]
-    }, 
-    {
-        path: '/index',
-        name: '分页&轮播图',
-        component: index,
-        iconCls: 'el-icon-picture-outline',
-        children: [{
-            path: '/paging',
-            name: '分页',
-            component: paging
-        }, 
-        {
-            path: '/shuffling',
-            name: '轮播图',
-            component: shuffling
-        }]
-    }, 
-    {
-        path: '/index',
-        name: '页面',
-        component: index,
-        iconCls: 'el-icon-news',
-        children: [{
-            path: '/error',
-            name: '404',
-            component: error
-        }, 
-        {
-            path: '/errorf',
-            name: '401',
-            component: errorf
-        }]
-    }]
+        }
+        // , 
+        // {
+        //     path: '/sendGoods',
+        //     name: '发货',
+        //     component: sendGoods
+        // }
+        ]
+    }
+    // , 
+    // {
+    //     path: '/index',
+    //     name: '分页&轮播图',
+    //     component: index,
+    //     iconCls: 'el-icon-picture-outline',
+    //     children: [{
+    //         path: '/paging',
+    //         name: '分页',
+    //         component: paging
+    //     }, 
+    //     {
+    //         path: '/shuffling',
+    //         name: '轮播图',
+    //         component: shuffling
+    //     }]
+    // }, 
+    // {
+    //     path: '/index',
+    //     name: '页面',
+    //     component: index,
+    //     iconCls: 'el-icon-news',
+    //     children: [{
+    //         path: '/error',
+    //         name: '404',
+    //         component: error
+    //     }, 
+    //     {
+    //         path: '/errorf',
+    //         name: '401',
+    //         component: errorf
+    //     }]
+    // }
+    ]
 })
