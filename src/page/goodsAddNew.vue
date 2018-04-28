@@ -168,7 +168,7 @@ export default {
   components: { quillEditor, classiFication },
   data() {
     return {
-      ossUploadUrl: 'http://cloud.eyun.online:9080/file/api/ossUpload', //上传图片服务器地址
+      ossUploadUrl: 'api/file/api/ossUpload', //上传图片服务器地址
       // goodsBrand: '', //商品品牌
       //选择商品分类
       type1: 0, //一级分类id
@@ -460,7 +460,7 @@ export default {
       //   return false
       // }
       //api 地址
-      let url = 'http://cloud.eyun.online:9080/product/api/product/publish';
+      let url = 'api/product/api/product/publish';
       //创建提交data对象
       let data = Object.create(null);
 
@@ -497,7 +497,7 @@ export default {
     subImage() {
       let data = Object.create(null);
       data = this.goodsImgList
-      const url = 'http://cloud.eyun.online:9080/product/api/product/skuImage';
+      const url = 'api/product/api/product/skuImage';
       this.$axios.post(url, data, ).then((res) => {
         this.$message.success('商品图片上传成功！');
         this.next()

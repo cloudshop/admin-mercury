@@ -54,21 +54,23 @@
                 <th width="10%">订单金额</th>
                 <th width="10%">订单状态</th>
                 <th width="10%">物流信息</th>
+                <th width="10%">快递单号</th>
                 <th width="10%">操作</th>
               </tr>
             </thead>
             <tbody>
               <!-- 商品单价、让利、库存、货号列表 -->
-              <tr>
-                <td>1</td>
+              <tr v-for="(item,index) in listData">
+                <td v-text="item.shopId">1</td>
                 <td>2</td>
+                <td v-text="item.orderNo">3</td>
+                <td>{{item.payment + '元'}}</td>
+                <td>{{item.postFee + '元'}}</td>
                 <td>3</td>
+                <td v-text="item.status">3</td>
+                <td v-text="item.shippingName">3</td>
                 <td>3</td>
-                <td>3</td>
-                <td>3</td>
-                <td>3</td>
-                <td>3</td>
-                <td><span>删除</span><span>修改</span></td>
+                <td><span class="edit edit-dele">删除</span><span class="edit edit-writ">修改</span></td>
               </tr>
             </tbody>
           </table>
@@ -82,6 +84,7 @@ export default {
   name: "allOrder",
   data() {
     return {
+      listData:[],
       input2: '',
       input21: '',
       input5: '',
@@ -117,16 +120,28 @@ export default {
 
   },
   created() {
-
+        
   },
   mounted() {
-
+    this.getAllOrder();
   },
   computed: {
 
   },
   methods: {
-
+    getAllOrder(){
+      const url = 'api/order/api/manage/findOrderByStatus/0'
+        let page = 1;
+        let siez = 10;
+        this.$axios.get(url)
+        .then((res) => {
+          console.log(res)
+          this.listData = res.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        })
+    }
   }
 };
 
@@ -233,9 +248,22 @@ export default {
   color: #fff;
 }
 
-
-
-
+.edit{
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 10px;
+    margin: 4px 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #fff;
+    /*border: 1px solid #ccc;*/
+}
+.edit-dele{
+  background: #5caeea;
+}
+.edit-writ{
+  background:#fd8585;
+}
 /************************/
 
 </style>

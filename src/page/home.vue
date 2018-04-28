@@ -60,7 +60,7 @@
     }
 </script>
 
-<style >
+<style scoped>
     /*.data_section{
         padding: 20px;
         margin-bottom: 40px;

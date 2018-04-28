@@ -54,7 +54,7 @@ export default {
   // 数据发生改变
   watch: {
     category1name(val) {
-      this.$axios.get('http://cloud.eyun.online:9080/product/api/categoryTree/subnode/' + this.category1)
+      this.$axios.get('api/product/api/categoryTree/subnode/' + this.category1)
         .then((response) => {
           this.secondCategory = response.data.secondCategory;
           this.thirdCategory = this.secondCategory[0].thirdCategory;
@@ -111,7 +111,7 @@ export default {
       this.$emit('update:type3', id);
     },
     getcategoryTree() {
-      this.$axios.get('http://cloud.eyun.online:9080/product/api/categoryTree/subnode/1').then((res) => {
+      this.$axios.get('api/product/api/categoryTree/subnode/1').then((res) => {
         this.firstCategory = res.data.firstCategory;
         this.category1name = this.firstCategory[0].firstidname;
         this.category1 = this.firstCategory[0].firstid;
@@ -120,7 +120,7 @@ export default {
       })
     },
     getSecondCategory() {
-      this.$axios.get('http://cloud.eyun.online:9080/product/api/categoryTree/subnode/' + 35)
+      this.$axios.get('api/product/api/categoryTree/subnode/' + 35)
         .then((response) => {
           this.secondCategory = response.data.secondCategory;
           this.category2name = this.secondCategory[0].secondName;

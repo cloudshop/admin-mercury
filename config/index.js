@@ -10,7 +10,13 @@ module.exports = {
         // Paths
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
-        proxyTable: {},
+        proxyTable: {
+            '/api': {
+                    target: 'http://cloud.eyun.online:9080/api',
+                    changeOrigin: true
+                    pathRewrite: { "^/api": "" }
+            }
+        },
 
         // Various Dev Server settings
         host: 'localhost', // can be overwritten by process.env.HOST

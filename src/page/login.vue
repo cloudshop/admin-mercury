@@ -61,9 +61,10 @@ export default {
       if(this.iphoneYN == true){
           var data = {'username':this.ruleForm.PassName,'password':this.ruleForm.PassWord}
           this.logining = true;
-          this.$axios.post('http://cloud.eyun.online:9080/auth/login/app',data)
+          this.$axios.post('api/auth/login/app',data)
           .then((res)=> {
               console.log(res)
+              console.log(document.cookie)
               setTimeout(() => {
               this.logining = false;
               this.$router.push({ path: "/sllerIndex" });

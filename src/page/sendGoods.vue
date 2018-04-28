@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 头部按钮 -->
-    <el-row >
+    <el-row>
       <el-col :span="24">
         <div class="grid-content">
           <el-button type="primary" plain>全部</el-button>
@@ -12,33 +12,32 @@
           <el-button type="primary" plain>已取消</el-button>
         </div>
       </el-col>
-      
     </el-row>
     <el-row class="top-row">
-    <!-- 条件选择 -->
-    <div class="grid-content ">
-      <div class="block blockin">
-        <span class="demonstration">下单时间:</span>
-        <el-date-picker class="selfpinput" v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1">
-        </el-date-picker>
+      <!-- 条件选择 -->
+      <div class="grid-content ">
+        <div class="block blockin">
+          <span class="demonstration">下单时间:</span>
+          <el-date-picker class="selfpinput" v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1">
+          </el-date-picker>
+        </div>
+        <div class="block blockin">
+          <span style="padding:0 10px;">-</span>
+          <el-date-picker class="selfpinput" v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1">
+          </el-date-picker>
+        </div>
+        <div class="blockin">
+          <span class="demonstration">买家:</span>
+          <el-input class="selfpinput" placeholder="请输入内容" prefix-icon="el-icon-search" v-model="input21">
+          </el-input>
+        </div>
+        <div class="blockin">
+          <span class="demonstration">订单编号:</span>
+          <el-input placeholder="请输入内容" v-model="input5" class="input-with-select selfpinput-serch">
+            <el-button slot="append" icon="el-icon-search"></el-button>
+          </el-input>
+        </div>
       </div>
-      <div class="block blockin">
-        <span style="padding:0 10px;">-</span>
-        <el-date-picker class="selfpinput" v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1">
-        </el-date-picker>
-      </div>
-      <div class="blockin">
-         <span class="demonstration">买家:</span>
-        <el-input class="selfpinput" placeholder="请输入内容" prefix-icon="el-icon-search" v-model="input21">
-        </el-input>
-      </div>
-      <div class="blockin" >
-       <span class="demonstration">订单编号:</span>
-        <el-input  placeholder="请输入内容" v-model="input5" class="input-with-select selfpinput-serch">
-          <el-button slot="append" icon="el-icon-search"></el-button>
-        </el-input>
-      </div>
-    </div>
     </el-row>
     <!-- 表单展现 -->
     <el-row>
@@ -133,12 +132,13 @@ export default {
 
 </script>
 <style>
-.top-row{
+.top-row {
   padding-bottom: 20px;
   border-bottom: 1px solid #989898;
   padding-top: 20px;
   border-top: 1px solid #989898;
 }
+
 .el-row {
   margin-bottom: 20px;
   &:last-child {
@@ -171,18 +171,24 @@ export default {
   padding: 10px 0;
   background-color: #f9fafc;
 }
-.blockin{
+
+.blockin {
   float: left;
 }
-.demonstration{
-  padding:  0 20px;
+
+.demonstration {
+  padding: 0 20px;
 }
+
 .selfpinput {
   width: 160px!important;
 }
-.selfpinput-serch{
+
+.selfpinput-serch {
   width: 200px!important;
 }
+
+
 /* Table Head */
 
 .newclass {
@@ -226,6 +232,7 @@ export default {
   background: #80c7fe;
   color: #fff;
 }
+
 
 
 
