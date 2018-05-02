@@ -29,10 +29,10 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- <el-col :span="24" class="toolbar">
+    <el-col :span="24" class="toolbar">
             <el-pagination background layout="prev,total, pager, next" :total="total" :current-page="filter.currentPage" @current-change="handleCurrentChange" @size-change="handleSizeChange" style="text-align:center;margin-top:10px;">
             </el-pagination>
-        </el-col> -->
+        </el-col>
     <!--编辑界面-->
     <el-dialog title="编辑" :visible.sync="editFormVisible">
       <div class="goods">
@@ -123,7 +123,7 @@ export default {
   methods: {
     getAlllist() {
       const url = 'api/product/api/product/skuStore'
-      const data = { shopId: 5, pageNum: 1, pageSize: 10 }
+      const data = {  pageNum: 1, pageSize: 10 }
       this.$axios.post(url, data)
         .then((res) => {
           this.listData = res.data;
