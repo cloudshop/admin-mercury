@@ -35,26 +35,31 @@
     		// ...mapState(['adminInfo']),
     	},
 		methods: {
-			// ...mapActions(['getAdminData']),
-			// async handleCommand(command) {
-			// 	if (command == 'home') {
-			// 		this.$router.push('/manage');
-			// 	}else if(command == 'singout'){
-			// 		const res = await signout()
-			// 		if (res.status == 1) {
-			// 			this.$message({
-	  //                       type: 'success',
-	  //                       message: '退出成功'
-	  //                   });
-	  //                   this.$router.push('/');
-			// 		}else{
-			// 			this.$message({
-	  //                       type: 'error',
-	  //                       message: res.message
-	  //                   });
-			// 		}
-			// 	}
-			// },
+			...mapActions(['getAdminData']),
+			async handleCommand(command) {
+				if (command == 'home') {
+					this.$router.push('/manage');
+				}else if(command == 'singout'){
+					const res = await signout()
+					if (res.status == 1) {
+						this.$message({
+	                        type: 'success',
+	                        message: '退出成功'
+	                    });
+	                    this.$axios.post('api/auth/logout/app').then((res)=>{
+	                    	console.log(res)
+	                    }).catch((err)=>{
+	                    	console.log(err)
+	                    })
+	                    this.$router.push('/');
+					}else{
+						this.$message({
+	                        type: 'error',
+	                        message: res.message
+	                    });
+					}
+				}
+			},
 		}
     }
 </script>

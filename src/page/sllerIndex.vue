@@ -8,11 +8,11 @@
           <h2><span>注册时间：</span>{{ShopDate}}</h2>
           <h2><span>店铺名称：</span>{{ShopName}}</h2>
           <h2><span>管理权限：</span>{{admin}}</h2>
-          <h2><span>更换头像：</span></h2>
-          <el-upload class="avatar-uploader" action="http://localhost:8080" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+          <!-- <h2><span>更换头像：</span></h2> -->
+         <!--  <el-upload class="avatar-uploader" action="http://localhost:8080" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
+          </el-upload> -->
         </div>
       </el-col>
     </el-row>
@@ -23,11 +23,12 @@ export default {
   name: "sllerIndex",
   data() {
     return {
-      name: '神笔马良',
-      ShopDate: '2018-01-01',
-      ShopName: '灵魂画手',
-      admin: '钻石会员',
-      imageUrl: ''
+      name: '',
+      ShopDate: '',
+      ShopName: '',
+      admin: ''
+      // ,
+      // imageUrl: ''
     };
   },
   methods: {

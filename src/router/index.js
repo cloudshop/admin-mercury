@@ -7,7 +7,6 @@ const login         = r => require.ensure([], () => r(require('@/page/login')), 
 const register      = r => require.ensure([], () => r(require('@/page/register')), 'register');
 // 首页
 const index         = r => require.ensure([], () => r(require('@/page/index')), 'index');
-
 // 商家首页
 const sllerIndex    = r => require.ensure([], () => r(require('@/page/sllerIndex')), 'sllerIndex');
 // 商品列表
@@ -17,34 +16,8 @@ const goodsAddNew   = r => require.ensure([], () => r(require('@/page/goodsAddNe
 // 全部订单
 const allOrder   = r => require.ensure([], () => r(require('@/page/allOrder')), 'allOrder');
 //发货页面
-const sendGoods   = r => require.ensure([], () => r(require('@/page/sendGoods')), 'sendGoods');
-// import login from '@/page/login';
-// 注册
-// import register from '@/page/register';
-// 首页
-// import index from '@/page/index';
+// const sendGoods   = r => require.ensure([], () => r(require('@/page/sendGoods')), 'sendGoods');
 
-// 商家首页
-// import sllerIndex from '@/page/sllerIndex';
-// 商品列表
-// import goodsListPage from '@/page/goodsListPage';
-// 添加商品
-// import goodsAddNew from '@/page/goodsAddNew';
-// 增加编辑
-// import addedit from '@/page/addedit';
-// 错误
-import error from '@/page/error';
-// 401
-import errorf from '@/page/401';
-/*
- * 下面为演示组件，后期去掉
- */
-// 管理
-// import management from '@/components/management';
-// 分页 
-import paging from '@/components/paging';
-// 轮播图
-import shuffling from '@/components/shuffling';
 
 // 启用路由
 Vue.use(Router);
