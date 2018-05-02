@@ -479,7 +479,7 @@ export default {
       //创建提交data对象
       let data = Object.create(null);
 
-      // data.shopId = '5' //商家id(写死的一个数值)
+      data.shopId = '5' //商家id(写死的一个数值)
       data.productName = this.goodsName; //商品名称
       data.listPrice = this.goodsPrice; //商品价格
       data.mainImage = this.mainimageUrl; //商品默认主图链接
@@ -501,12 +501,13 @@ export default {
         }
         this.goodsImgList = data;
         this.$message.success('商品基本信息上传成功！');
+        this.next();
       }).catch((err) => {
         console.log(err)
         this.$message.error("商品基本信息上传失败，请检查填写内容！");
         return false
       })
-      this.next();
+      
     },
     //提交图片
     subImage() {
