@@ -6,6 +6,7 @@ import router from './router';
 import store from './vuex/store';
 import axios  from  'axios' ;
 axios.defaults.baseURL='http://app.grjf365.com/';
+axios.defaults.withCredentials=true;
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 Vue.prototype.$axios = axios;
