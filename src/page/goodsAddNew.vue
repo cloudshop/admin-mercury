@@ -22,7 +22,7 @@
       </div>
       <div class="goods">
         <span>商品价格：</span>
-        <input v-model.trim="goodsPrice" class="base-input" :keyup.up="IsNumberCheck(goodsPrice)"  placeholder="请输入金额"  />
+        <base-input v-model="goodsPrice"  @keyup.up="IsNumberCheck(goodsPrice)" ></base-input>
         <span style="margin-left:20px;">元</span> <span style="font-size:12px;color:rgb(162, 162, 162);">此价格必须是0.01-9999999之间的数字，且不能大于市场价，此价格为商品的实际销售价。</span>
       </div>
       <div class="goods" style="align-items: flex-start;" v-for="(item,index) in goodsClass">
@@ -58,7 +58,8 @@
               <td>{{item.attrValue}}</td>
               <td v-if="item.AnotherValue ">{{item.AnotherValue}}</td>
               <td>
-                <input type="number" class="goodsinput" v-model.trim="item.skuPrice" min="0.00" @blur="checkPrice(item.skuPrice)" placeholder="商品单价" />
+                <!-- <input v-model.trim="goodsPrice" style="width:200px;" class="base-input" :keyup.up="IsNumberCheck(goodsPrice)" placeholder="请输入金额"  /> -->
+                <input type="text" class="goodsinput" v-model.trim="item.skuPrice" :keyup.up="CheckSkuPrice(index,item.skuPrice)" @blur="checkPrice(item.skuPrice,index)" placeholder="商品单价" />
               </td>
               <td>
                 <input type="text" class="goodsinput" v-model.trim="item.transfer" placeholder="请输入内容" />
@@ -81,7 +82,7 @@
       </div>
       <div class="goods">
         <span>商品图片：</span>
-        <el-upload class="avatar-uploader"   :action="ossUploadUrl" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+        <el-upload class="avatar-uploader"   :action="ossUploadUrl" :with-credentials="true" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
           <img v-if="showMainimage" :src="showMainimage" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -104,7 +105,7 @@
         <quill-editor ref="newEditor" :options="newOption" style="height: 300px; margin-bottom: 54px" v-model="editorContent">
         </quill-editor>
         <div class="addimage">
-          <el-upload class="avatar-uploader" style="border:none!important" :action="ossUploadUrl" :show-file-list="false" :on-success="uploadDescribe" :before-upload="beforeUploadDescribe">
+          <el-upload class="avatar-uploader" style="border:none!important" :action="ossUploadUrl" :with-credentials="true" :show-file-list="false" :on-success="uploadDescribe" :before-upload="beforeUploadDescribe">
             <el-button type="primary">添加图片</el-button>
           </el-upload>
         </div>
@@ -140,7 +141,7 @@
       <h3>上传商品图片</h3>
       <div class="goods" v-for="(item,index) in goodsImgList" :key="index">
         <span>{{item.skuName}}</span>
-        <el-upload :action="ossUploadUrl" accept="image" list-type="picture-card" :auto-upload="true" :limit="5" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :before-upload="beforeAvatarUpload" @change.native="popup(index)">
+        <el-upload :action="ossUploadUrl" :with-credentials="true" accept="image" list-type="picture-card" :auto-upload="true" :limit="5" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :before-upload="beforeAvatarUpload" @change.native="popup(index)">
           <i class="el-icon-plus"></i>
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
@@ -160,15 +161,16 @@
 import { quillEditor } from 'vue-quill-editor'
 import Quill from 'quill'
 import classiFication from '../components/classiFication'
+import BaseInput from '../components/BaseInput'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 export default {
   name: "goodsAddNew",
-  components: { quillEditor, classiFication },
+  components: { quillEditor, classiFication, BaseInput},
   data() {
     return {
-      ossUploadUrl: 'api/file/api/ossUpload', //上传图片服务器地址
+      ossUploadUrl: 'http://app.grjf365.com/api/file/api/ossUpload', //上传图片服务器地址
       // goodsBrand: '', //商品品牌
       //选择商品分类
       type1: 0, //一级分类id
@@ -225,7 +227,7 @@ export default {
   },
   // 数据发生改变
   watch: {
-    // goodsPrice(cal){
+    // goodsPrice(val){
     //   console.log(val)
     // }
   },
@@ -241,16 +243,17 @@ export default {
   },
   // 里面的函数只有被调用才会执行
   methods: {
+
     IsNumberCheck(val){
-      var that =this
-      var reg = /[^\d]/g;
-      // console.log(val.replace(/[^\d]/g,''))
-      if(reg.test(val)){
-        console.log(that[val])
+      var reg = /^[0-9]+(.[0-9]{0,2})?$/;
+      if(!reg.test(val)){
+        this.$message.error('商品价格只能为数字!');
+        this.goodsPrice=''
       }
-      // if(!val){
-      //   console(123)
-      // }
+      if(val.length>7){
+        this.$message.error('商品价格只能为数字!');
+        this.goodsPrice=''
+      }
     },
     uploadDescribe(res, file) {
       let length = this.$refs.newEditor.quill.getSelection();
@@ -285,10 +288,22 @@ export default {
       }, 0)
       this.goodsNumber = num
     },
-    checkPrice(val) {
-      // console.log(val)
+    CheckSkuPrice(index,val){
+      var reg = /^[0-9]+(.[0-9]{0,2})?$/;
+      if(!reg.test(val)){
+        this.$message.error('商品价格只能为数字!');
+        this.goodsList[index].skuPrice=0;
+      }
+      if (this.goodsList[index].skuPrice.length>9) {
+        this.$message.error('商品价格不能超过7位数!');
+        this.goodsList[index].skuPrice=0;
+      }
+    },
+    checkPrice(val,index) {
+      var reg = /^[0-9]+(.[0-9]{0,2})?$/;
       if (val < 0) {
         this.$message.error("最小价格不能小于0元");
+        this.goodsList[index].skuPrice = 0;
         return false
       }
     },
@@ -312,7 +327,7 @@ export default {
           obj.attrAnother = '';
           obj.AnotherValue = '';
           obj.skuCount = 0,
-            obj.skuPrice = 0;
+          obj.skuPrice = 0;
           obj.transfer = '';
           obj.skuCode = '';
           obj.attrValue = val[i];
@@ -329,7 +344,7 @@ export default {
             obj.attrAnother = that.goodsClass[1].attr;
             obj.AnotherValue = val2[j];
             obj.skuCount = 0,
-              obj.skuPrice = 0;
+            obj.skuPrice = 0;
             obj.transfer = '';
             obj.skuCode = '';
             obj.attrValue = val[i];
