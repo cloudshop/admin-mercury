@@ -48,7 +48,7 @@
         <input type="text" class="goodsinput" v-model.trim="editForm.price" min="0.00" placeholder="商品单价" />
       </div>
       <div class="goods">
-        <span>让利价格</span>
+        <span>让利</span>
         <input type="text" class="goodsinput" v-model.trim="editForm.transfer" min="0.00" placeholder="商品单价" />
       </div>
       <div class="goods">

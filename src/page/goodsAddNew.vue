@@ -59,13 +59,13 @@
               <td v-if="item.AnotherValue ">{{item.AnotherValue}}</td>
               <td>
                 <!-- <input v-model.trim="goodsPrice" style="width:200px;" class="base-input" :keyup.up="IsNumberCheck(goodsPrice)" placeholder="请输入金额"  /> -->
-                <input type="text" class="goodsinput" v-model.trim="item.skuPrice" @keyup.stop="CheckSkuPrice(index,item.skuPrice)" @blur="checkPrice(item.skuPrice,index)" placeholder="商品单价" />
+                <input type="text" class="goodsinput" v-model.trim="item.skuPrice" @keyup.stop="CheckSkuPrice(index,item.skuPrice)" @blur="checkPrice(index,item.skuPrice)" placeholder="商品单价" />
               </td>
               <td>
-                <input type="text" class="goodsinput" v-model.trim="item.transfer" @keyup.stop="CheckTransfer(index,item.transfer)" placeholder="请输入百分比%" />
+                <input type="text" class="goodsinput" v-model.trim="item.transfer" @keyup.stop="CheckTransfer(index,item.transfer)" placeholder="请输入百分比" />
               </td>
               <td>
-                <input type="number" class="goodsinput" v-model.trim="item.skuCount" min="0" @blur="goddsTotal(item,index)" placeholder="商品库存" />
+                <input type="text" class="goodsinput" v-model.trim="item.skuCount" min="0" @keyup.stop="CheckCount(index,item.skuCount)"  @blur="goddsTotal(item,index)" placeholder="商品库存" />
               </td>
               <td>
                 <input type="text" class="goodsinput" v-model.trim="item.skuCode" placeholder="商品货号" />
@@ -137,11 +137,13 @@
         <el-input class="goodsinput" v-model="goodsOther" placeholder="请填写内容"></el-input>
       </div> -->
     </div>
-    <div class="goodcontent" v-show="active === 1"> 
+    <div class="goodcontent" v-show="active === 1" > 
       <h3>上传商品图片</h3>
+      <p style="margin-left: 70px;color: #f54d4d;font-weight: bold;margin: 40px 0 40px 60px;">每个商品最多可以上传5张图片！</p>
       <div class="goods" v-for="(item,index) in goodsImgList" :key="index">
+      <!-- <div class="goods" > -->
         <span>{{item.skuName}}</span>
-        <el-upload :action="ossUploadUrl" :with-credentials="true" accept="image" list-type="picture-card" :auto-upload="true" :limit="5" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :before-upload="beforeAvatarUpload" @change.native="popup(index)">
+        <el-upload  :action="ossUploadUrl" :with-credentials="true" accept="image" list-type="picture-card" :auto-upload="true" :limit="5" :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleSuccess" :before-upload="beforeAvatarUpload" @change.native="popup(index)">
           <i class="el-icon-plus"></i>
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
@@ -289,7 +291,8 @@ export default {
       this.goodsNumber = num
     },
     CheckSkuPrice(index,val){
-      var reg = /^[0-9]+(.[0-9]{0,2})?$/;
+      var reg = /^[0-9]+(.[0-9]{0,2})?$/g;
+      // this.goodsList[index].skuPrice=this.goodsList[index].skuPrice.replace(reg,'');
       if(!reg.test(val)){
         this.$message.error('商品价格只能为数字!');
         this.goodsList[index].skuPrice='';
@@ -300,22 +303,32 @@ export default {
       }
     },
     CheckTransfer(index,val){
-      var reg = /^[0-9]+$/g;
-      if(!reg.test(val)){
-        this.$message.error('商品让利只能为数字!');
-        this.goodsList[index].transfer='';
-      }
+      var reg = /[^\d]+$/g;
+      this.goodsList[index].transfer=this.goodsList[index].transfer.replace(reg,'');
+      // if(!reg.test(val)){
+      //   this.$message.error('商品让利只能为数字!');
+      //   this.goodsList[index].transfer='';
+      // }
       if (this.goodsList[index].transfer.length>=3) {
         this.$message.error('商品让利不能超过100%!');
         this.goodsList[index].transfer='';
       }
     },
-    checkPrice(val,index) {
+    checkPrice(index,val) {
       var reg = /^[0-9]+(.[0-9]{0,2})?$/;
       if (val < 0) {
         this.$message.error("最小价格不能小于0元");
         this.goodsList[index].skuPrice = 0;
         return false
+      }
+    },
+    CheckCount(index,val){
+      var reg = /[^\d]$/g;
+      this.goodsList[index].skuCount = this.goodsList[index].skuCount.replace(reg,'')
+      if(this.goodsList[index].skuCount.length>6){
+         this.$message.error("库存超过最大限制！");
+         this.goodsList[index].skuCount = '';
+         return false
       }
     },
     checkInput(val) {
@@ -337,7 +350,7 @@ export default {
           obj.attr = that.goodsClass[0].attr;
           obj.attrAnother = '';
           obj.AnotherValue = '';
-          obj.skuCount = 0,
+          obj.skuCount = '',
           obj.skuPrice = '';
           obj.transfer = '';
           obj.skuCode = '';
@@ -743,7 +756,6 @@ export default {
 .avatar-uploader .el-upload:hover {
   border-color: #409EFF;
 }
-
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
