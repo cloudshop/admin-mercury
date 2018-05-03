@@ -59,10 +59,10 @@
               <td v-if="item.AnotherValue ">{{item.AnotherValue}}</td>
               <td>
                 <!-- <input v-model.trim="goodsPrice" style="width:200px;" class="base-input" :keyup.up="IsNumberCheck(goodsPrice)" placeholder="请输入金额"  /> -->
-                <input type="text" class="goodsinput" v-model.trim="item.skuPrice" :keyup.up="CheckSkuPrice(index,item.skuPrice)" @blur="checkPrice(item.skuPrice,index)" placeholder="商品单价" />
+                <input type="text" class="goodsinput" v-model.trim="item.skuPrice" @keyup.stop="CheckSkuPrice(index,item.skuPrice)" @blur="checkPrice(item.skuPrice,index)" placeholder="商品单价" />
               </td>
               <td>
-                <input type="text" class="goodsinput" v-model.trim="item.transfer" placeholder="请输入内容" />
+                <input type="text" class="goodsinput" v-model.trim="item.transfer" @keyup.stop="CheckTransfer(index,item.transfer)" placeholder="请输入百分比%" />
               </td>
               <td>
                 <input type="number" class="goodsinput" v-model.trim="item.skuCount" min="0" @blur="goddsTotal(item,index)" placeholder="商品库存" />
@@ -195,7 +195,7 @@ export default {
       goodsClass: [{
         attr: '',
         flag: '',
-        attrValue: ['标签1', '标签2']
+        attrValue: []
       }],
       flag: 0,
       active: 0,
@@ -292,11 +292,22 @@ export default {
       var reg = /^[0-9]+(.[0-9]{0,2})?$/;
       if(!reg.test(val)){
         this.$message.error('商品价格只能为数字!');
-        this.goodsList[index].skuPrice=0;
+        this.goodsList[index].skuPrice='';
       }
       if (this.goodsList[index].skuPrice.length>9) {
         this.$message.error('商品价格不能超过7位数!');
-        this.goodsList[index].skuPrice=0;
+        this.goodsList[index].skuPrice='';
+      }
+    },
+    CheckTransfer(index,val){
+      var reg = /^[0-9]+$/g;
+      if(!reg.test(val)){
+        this.$message.error('商品让利只能为数字!');
+        this.goodsList[index].transfer='';
+      }
+      if (this.goodsList[index].transfer.length>=3) {
+        this.$message.error('商品让利不能超过100%!');
+        this.goodsList[index].transfer='';
       }
     },
     checkPrice(val,index) {
@@ -327,7 +338,7 @@ export default {
           obj.attrAnother = '';
           obj.AnotherValue = '';
           obj.skuCount = 0,
-          obj.skuPrice = 0;
+          obj.skuPrice = '';
           obj.transfer = '';
           obj.skuCode = '';
           obj.attrValue = val[i];
@@ -344,7 +355,7 @@ export default {
             obj.attrAnother = that.goodsClass[1].attr;
             obj.AnotherValue = val2[j];
             obj.skuCount = 0,
-            obj.skuPrice = 0;
+            obj.skuPrice = '';
             obj.transfer = '';
             obj.skuCode = '';
             obj.attrValue = val[i];
@@ -442,7 +453,7 @@ export default {
      
     },
     // 点击下一步进行提交校验 、通过->步骤条加一
-    submitForm: function() {
+    submitForm() {
       //提交前 对所有的数据进行校验
       // if(!this.type1 && !this.type2 && !this.type3){
       //   this.$message.error("请选择商品分类！");
