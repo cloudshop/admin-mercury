@@ -6,14 +6,15 @@
       <!-- </el-table-column> -->
       <el-table-column prop="skucode" label="商品编号" width="120">
       </el-table-column>
-      <el-table-column prop="skuname" label="商品名称" width="120">
+      <el-table-column prop="skuname" label="商品名称" width="320">
       </el-table-column>
-      <el-table-column prop="price" label="商品单价" width="120">
+      <el-table-column prop="price" label="商品单价" width="100">
         <template slot-scope="scope">{{scope.row.price+'元'}}</template>
       </el-table-column>
-      <el-table-column prop="transfer" label="让利价格" width="120">
+      <el-table-column prop="transfer" label="让利 %" width="80">
+        <template slot-scope="scope">{{scope.row.transfer * 100}}</template>
       </el-table-column>
-      <el-table-column prop="count" label="库存" width="120">
+      <el-table-column prop="count" label="库存" width="80">
       </el-table-column>
       <el-table-column prop="publishtime" label="发布时间" width="100">
       </el-table-column>
@@ -48,7 +49,7 @@
         <input type="text" class="goodsinput" v-model.trim="editForm.price" min="0.00" placeholder="商品单价" />
       </div>
       <div class="goods">
-        <span>让利</span>
+        <span>让利%</span>
         <input type="text" class="goodsinput" v-model.trim="editForm.transfer" min="0.00" placeholder="商品单价" />
       </div>
       <div class="goods">
@@ -94,12 +95,7 @@ export default {
       },
       //新增编辑字段
       editForm: {
-        id: 0,
-        name: "",
-        gender: "1",
-        age: 0,
-        date: "Tue Apr 10 2018 00:00:00 GMT+0800 (中国标准时间)",
-        county: ""
+       
       }
     };
   },
@@ -123,14 +119,14 @@ export default {
   methods: {
     getAlllist() {
       const url = 'api/product/api/product/skuStore'
-      const data = {  pageNum: 1, pageSize: 10 }
+      const data = {  pageNum: 1, pageSize: 20 }
       this.$axios.post(url, data)
         .then((res) => {
           this.listData = res.data;
-          console.log(res)
+          // console.log(res)
         })
         .catch(function(error) {
-          console.log(error);
+          // console.log(error);
         })
     },
     // 编辑页面取消方法（隐藏编辑页面）
@@ -142,16 +138,17 @@ export default {
       this.editFormVisible = true;
       // 深拷贝并赋值
       this.editForm = Object.assign({}, row); //合并对象操作
-      console.log(this.editForm);
+      this.editForm.transfer *=100;
+      // console.log(this.editForm);
     },
     // 删除方法
     handleDelete: function(index, row) {
-      let status = 1;
+      const status = 1;
       const url = 'api/product/api/product/handle/'
       const data = row.skuid;
-      console.log(index)
-      console.log(row)
-      console.log(data)
+      // console.log(index)
+      // console.log(row)
+      // console.log(data)
       this.$confirm("确认下架商品吗?", "提示", {}).then(() => {
         
         this.$axios.post(url+status, {"id":data},{headers:{'Content-Type': 'application/json'}}).then((res) => {
@@ -165,8 +162,9 @@ export default {
             this.getAlllist();
           }, 2000);
         }).catch((err) => {
-          console.log(err);
-          this.$message.error("提交失败！");
+          let msg = err.response.title
+          // console.log(err);
+          this.$message.error(msg);
         })
 
       });

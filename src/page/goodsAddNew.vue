@@ -247,6 +247,7 @@ export default {
   methods: {
 
     IsNumberCheck(val){
+      // console.log(this.goodsPrice)
       var reg = /^[0-9]+(.[0-9]{0,2})?$/;
       if(!reg.test(val)){
         this.$message.error('商品价格只能为数字!');
@@ -526,12 +527,14 @@ export default {
         this.goodsImgList = data;
         this.$message.success('商品基本信息上传成功！');
         this.next();
-      }).catch((err) => {
-        console.log(err)
-        this.$message.error("商品基本信息上传失败，请检查填写内容！");
-        return false
-      })
-      
+      }) .catch((error)=> {
+        if(error.response.status == 500){
+           this.$message.error("账号超时请退出从新登录！");
+        }else {
+            this.$message.error("商品基本信息上传失败，请检查填写内容！");
+            return false
+          }
+        })  
     },
     //提交图片
     subImage() {
