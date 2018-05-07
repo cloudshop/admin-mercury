@@ -529,7 +529,11 @@ export default {
         this.next();
       }) .catch((error)=> {
         if(error.response.status == 500){
-           this.$message.error("账号超时请退出从新登录！");
+           this.$message.error("账号超时，请重新登录！");
+           setTimeout(() => {
+            // this.logining = false;
+            this.$router.push({ path: "/login" });
+          }, 2000);
         }else {
             this.$message.error("商品基本信息上传失败，请检查填写内容！");
             return false
