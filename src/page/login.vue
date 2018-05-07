@@ -1,6 +1,6 @@
 <template>
   <div class="login-wrap">
-    <el-form label-position="left" :model="ruleForm"  ref="ruleForm" label-width="0px" class="demo-ruleForm login-container">
+    <el-form label-position="left" :model="ruleForm" ref="ruleForm" label-width="0px" class="demo-ruleForm login-container">
       <h2 class="title">贡融积分<span class="logtitle"></span>商家管理平台</h2>
       <el-form-item prop="PassName">
         <el-input type="text" v-model="ruleForm.PassName" auto-complete="off" @blur="upperCase" placeholder="请输入手机号"></el-input>
@@ -25,12 +25,12 @@ export default {
   name: "login",
   data() {
     return {
-        iphoneYN:false,   
+      iphoneYN: false,
       logining: false,
       ruleForm: {
         PassName: "",
         PassWord: ""
-      }     
+      }
     }
   },
   watch: {
@@ -53,35 +53,41 @@ export default {
       }
     },
     btn() {
-      if(!this.ruleForm.PassWord){
+      if (!this.ruleForm.PassWord) {
         this.$message.error("请填写密码！");
-            this.logining = false;
-            return false;
+        this.logining = false;
+        return false;
       }
-      if(this.iphoneYN == true){
-          var data = {'username':this.ruleForm.PassName,'password':this.ruleForm.PassWord}
-          this.logining = true;
-          this.$axios.post('api/auth/login/app',data)
-          .then((res)=> {
-              console.log(res)
-              console.log(document.cookie)
-              setTimeout(() => {
+      if (this.iphoneYN == true) {
+        var data = { 'username': this.ruleForm.PassName, 'password': this.ruleForm.PassWord }
+        this.logining = true;
+        this.$axios.post('api/auth/login/app', data)
+          .then((res) => {
+            console.log(res)
+            console.log(document.cookie)
+            setTimeout(() => {
               this.logining = false;
               this.$router.push({ path: "/sllerIndex" });
             }, 2000);
 
           })
-          .catch((error)=> {
-            if(error.response.status === 500){
-              this.$message.error("'服务器繁忙，请耐心等待'");
+          .catch((error) => {
+            console.log(error.response.status)
+            if (error.response.status === 400) {
+              this.$message.error("用户名或密码错误!");
+              this.ruleForm.PassName = '';
+              this.ruleForm.PassWord = '';
+            }else if(error.response.status === 500){
+              this.$message.error("服务器繁忙，请耐心等待");
             }
             this.logining = false;
             return false;
           });
-      }else{
+      } else {
         this.$message.error("请填写正确电话号码!");
+        return false
       }
-      
+
     }
     // ,
     // var p1=/^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/; 
