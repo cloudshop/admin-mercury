@@ -2,11 +2,9 @@
   <div class="header-table">
     <!--列表-->
     <el-table :data="listData" highlight-current-row stripe v-loading="loading" element-loading-text="拼命加载中" style="width: 100%;">
-      <!-- <el-table-column type="index" width="60"> -->
-      <!-- </el-table-column> -->
-      <el-table-column prop="skucode" label="商品编号" width="120">
+      <el-table-column prop="skuCode" label="商品编号" width="120">
       </el-table-column>
-      <el-table-column prop="skuname" label="商品名称" width="320">
+      <el-table-column prop="skuName" label="商品名称" width="320">
       </el-table-column>
       <el-table-column prop="price" label="商品单价" width="100">
         <template slot-scope="scope">{{scope.row.price+'元'}}</template>
@@ -16,11 +14,11 @@
       </el-table-column>
       <el-table-column prop="count" label="库存" width="80">
       </el-table-column>
-      <el-table-column prop="publishtime" label="发布时间" width="100">
+      <el-table-column prop="publishTime" label="发布时间" width="100">
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="140">
-        <template slot-scope="scope"><span v-if="scope.row.status==='0'">已上架</span>
-          <span v-if="scope.row.status==='1'">已下架</span>
+      <el-table-column prop="STATUS" label="状态" width="140">
+        <template slot-scope="scope"><span v-if="scope.row.STATUS==='0'">已上架</span>
+          <span v-if="scope.row.STATUS==='1'">已下架</span>
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -31,38 +29,38 @@
       </el-table-column>
     </el-table>
     <el-col :span="24" class="toolbar">
-            <el-pagination background layout="prev,total, pager, next" :total="total" :current-page="filter.currentPage" @current-change="handleCurrentChange" @size-change="handleSizeChange" style="text-align:center;margin-top:10px;">
+            <el-pagination background layout="prev, pager, next" :page-size="pageSize" :total="total" :current-page="pageNum" @current-change="handleCurrentChange" @size-change="handleSizeChange" style="text-align:center;margin-top:10px;">
             </el-pagination>
         </el-col>
     <!--编辑界面-->
     <el-dialog title="编辑" :visible.sync="editFormVisible">
       <div class="goods">
         <span>商品名称</span>
-        <span>{{editForm.skuname}}</span>
+        <span>{{editForm.skuName}}</span>
       </div>
       <div class="goods">
         <span>商品编号</span>
-        <span>{{editForm.skucode}}</span>
+        <span>{{editForm.skuCode}}</span>
       </div>
       <div class="goods">
         <span>商品单价</span>
-        <input type="text" class="goodsinput" v-model.trim="editForm.price" min="0.00" placeholder="商品单价" />
+        <input type="text" class="goodsinput" v-model.trim="editForm.price" @keyup.stop="CheckSkuPrice(editForm.price)" @blur="checkPrice(editForm.price)" placeholder="商品单价" />
       </div>
       <div class="goods">
-        <span>让利%</span>
-        <input type="text" class="goodsinput" v-model.trim="editForm.transfer" min="0.00" placeholder="商品单价" />
+        <span>让利 %</span>
+        <input type="text" class="goodsinput" v-model.trim="editForm.transfer" @keyup.stop="CheckTransfer(editForm.transfer)" @blur="CheckTransfer2(editForm.transfer)" placeholder="商品让利" />
       </div>
       <div class="goods">
         <span>库存</span>
-        <input type="text" class="goodsinput" v-model.trim="editForm.count" min="0.00" placeholder="商品单价" />
+        <input type="text" class="goodsinput" v-model.trim="editForm.count" @keyup.stop="CheckCount(editForm.count)"  @blur="checkNum(editForm.count)" placeholder="商品库存" />
       </div>
       <div class="goods">
         <span>发布时间</span>
-        <span>{{editForm.publishtime}}</span>
+        <span>{{editForm.publishTime}}</span>
       </div>
       <div class="goods">
         <span>状态</span>
-        <span v-if="editForm.status==='0'">已上架</span><span v-if="editForm.status==='1'">已下架</span>
+        <span v-if="editForm.STATUS==='0'">已上架</span><span v-if="editForm.STATUS==='1'">已下架</span>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="close">取消</el-button>
@@ -72,36 +70,23 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-// 导入获取表格数据接口方法
-// import { getTableData } from "@/api/getData";
 export default {
   name: "goodsListPage",
   data() {
     return {
       listData: [],
-      goods: [],
-      userData: [], //数据列表
       loading: false, //是显示加载
       searchName: "", //搜索的名字
-      dayValue: "", //选择时间
-      searchdata: [],
       editFormVisible: false, //控制编辑页面显示与隐藏
-      dialogFormVisible: false, //控制新增页面显示与隐藏
-      total: 0, //总页数
-      filter: {
-        //分页插件
-        pageSize: 15, // 页大小
-        currentPage: 1 // 当前页
-      },
+      total: 36, //总页数
+      pageNum:1,
+      pageSize:10,
       //新增编辑字段
-      editForm: {
-       
-      }
+      editForm: { }
     };
   },
   filters: {
     // addPrice(userData){
-
     // } 
   },
   // 数据发生改变
@@ -113,20 +98,81 @@ export default {
   // 创建完毕状态(里面是操作)
   created() {
     this.getAlllist();
-
   },
-  // 里面的函数只有被调用才会执行
   methods: {
+      CheckSkuPrice(val){
+      var reg = /^[0-9]+(.[0-9]{0,2})?$/g;
+      if(!reg.test(val)){
+        this.$message.error('商品价格只能为数字!');
+        this.editForm.price='';
+        return false
+      }else if( Number.isNaN(Number(val))){
+        this.$message.error('商品价格只能为数字!');
+        this.editForm.price='';
+        return false
+      }
+      var num =Math.trunc(val).toString();
+      if (num.length > 7) {
+        this.$message.error('商品价格不能超过7位数!');
+        this.editForm.price='';
+        return false
+      }
+    },
+    CheckTransfer(val){
+      var reg = /[^\d]+$/g;
+      this.editForm.transfer=this.editForm.transfer.replace(reg,'');
+      if (this.editForm.transfer.length>=3) {
+        this.$message.error('商品让利不能超过100%!');
+        this.editForm.transfer='';
+      }
+    },
+    CheckTransfer2(val){
+      if(Number.isNaN(Math.trunc(val))){
+        this.$message.error("请填写数字!");
+        this.editForm.transfer ='';
+        return false
+      }
+    },
+    checkPrice(val) {
+      if(Number.isNaN(Math.trunc(val))){
+        this.$message.error("请填写数字!");
+        this.editForm.price ='';
+        return false
+      }
+    },
+    CheckCount(val){
+      var test = Math.trunc(val)
+      if(Number.isNaN(test)){
+        this.$message.error("请填写数字!");
+        this.editForm.count ='';
+        return false
+      }
+      if(this.editForm.count.length>8){
+         this.$message.error("库存超过最大限制！");
+         this.editForm.count = '';
+         return false
+      }
+      this.editForm.count= test
+    },
+    checkNum(val){
+      if(Number.isNaN(Math.trunc(val))){
+        this.$message.error("请填写数字!");
+        this.editForm.count ='';
+        return false
+      }
+    },
     getAlllist() {
+      this.loading = true;
       const url = 'api/product/api/product/skuStore'
-      const data = {  pageNum: 1, pageSize: 20 }
-      this.$axios.post(url, data)
+      this.$axios.post(url,{pageNum: this.pageNum, pageSize:this.pageSize})
         .then((res) => {
-          this.listData = res.data;
-          // console.log(res)
+          this.listData = res.data.skuList;
+          this.total = res.data.totalCount;
+          this.loading = false;
         })
         .catch(function(error) {
-          // console.log(error);
+          this.$message("获取信息失败");
+          this.loading = false;
         })
     },
     // 编辑页面取消方法（隐藏编辑页面）
@@ -139,52 +185,44 @@ export default {
       // 深拷贝并赋值
       this.editForm = Object.assign({}, row); //合并对象操作
       this.editForm.transfer *=100;
-      // console.log(this.editForm);
     },
     // 删除方法
     handleDelete: function(index, row) {
       const status = 1;
       const url = 'api/product/api/product/handle/'
-      const data = row.skuid;
-      // console.log(index)
-      // console.log(row)
-      // console.log(data)
+      const data = row.skuId;
       this.$confirm("确认下架商品吗?", "提示", {}).then(() => {
-        
+        this.loading = true;
         this.$axios.post(url+status, {"id":data},{headers:{'Content-Type': 'application/json'}}).then((res) => {
-          console.log(res);
           setTimeout(() => {
             this.$message({
               message: "提交成功！",
               type: "success"
             });
-            this.loading = false;
             this.getAlllist();
+            this.loading = false;
           }, 2000);
         }).catch((err) => {
-          let msg = err.response.title
-          // console.log(err);
+          let msg = err.response.data.title
           this.$message.error(msg);
+          this.loading = false;
         })
 
       });
     },
-
     // 编辑、新增弹窗 提交方法
     submit: function() {
       let status = 0;
       let data = Object.create(null);
-      data.id = this.editForm.skuid;
+      data.id = this.editForm.skuId;
       data.price = this.editForm.price;
       data.count = this.editForm.count;
       data.profit = this.editForm.transfer;
-      console.log(data);
       const url = 'api/product/api/product/handle/'
       this.$confirm("确认提交吗？", "提示", {}).then(() => {
         this.loading = true;
-        // 此处应该请求数据，暂时写为push，直接放在数据末尾，
+        // 此处应该请求数据
         this.$axios.post(url + status, data).then((res) => {
-          console.log(res);
           setTimeout(() => {
             this.$message({
               message: "提交成功！",
@@ -195,12 +233,11 @@ export default {
           }, 2000);
           this.editFormVisible = false;
         }).catch((err) => {
-          console.log(err.response.data);
           this.$message.error(err.response.data.title);
+          this.editFormVisible = false;
+          this.loading = false;
         })
-
       });
-
     },
     // 搜索方法
     // search: function() {
@@ -220,7 +257,6 @@ export default {
     //     }
     //     this.loading = false;
     //     this.userData = this.searchdata;
-    //     console.log(this.searchdata);
     // },
     // pageSize 改变时会触发
     handleSizeChange(val) {
@@ -228,19 +264,8 @@ export default {
     },
     // currentPage 改变时会触发
     handleCurrentChange(val) {
-      // let datalist = this.goods;
-      // 保存当前页
-      // this.filter.currentPage = val;
-      // 获取数据
-      // this.getuser();
-      // console.log(`当前页: ${val}`);
-    },
-    // 分页获取数据
-    getuser() {
-      // 获取设置的显示条数
-      // const res1 = getTableData();
-      // console.log(this.userData);
-      // this.userData = res1.data.userData;
+      this.pageNum = val;
+      this.getAlllist()
     }
   }
 };
