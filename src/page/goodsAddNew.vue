@@ -62,10 +62,10 @@
                 <input type="text" class="goodsinput" v-model.trim="item.skuPrice" @keyup.stop="CheckSkuPrice(index,item.skuPrice)" @blur="checkPrice(index,item.skuPrice)" placeholder="商品单价" />
               </td>
               <td>
-                <input type="text" class="goodsinput" v-model.trim="item.transfer" @keyup.stop="CheckTransfer(index,item.transfer)" placeholder="请输入百分比" />
+                <input type="text" class="goodsinput" v-model.trim="item.transfer" @keyup.stop="CheckTransfer(index,item.transfer)" @blur="CheckTransfer2(index,item.transfer)" placeholder="请输入百分比" />
               </td>
               <td>
-                <input type="text" class="goodsinput" v-model.trim="item.skuCount" min="0" @keyup.stop="CheckCount(index,item.skuCount)"  @blur="goddsTotal(item,index)" placeholder="商品库存" />
+                <input type="text" class="goodsinput" v-model.trim="item.skuCount"  @keyup.stop="CheckCount(index,item.skuCount)"  @blur="checkNum(index,item.skuCount)" placeholder="商品库存" />
               </td>
               <td>
                 <input type="text" class="goodsinput" v-model.trim="item.skuCode" placeholder="商品货号" />
@@ -279,6 +279,70 @@ export default {
       }
       // return isJPEG && isJPG && isPNG && isLt2M;
     },
+
+    
+    CheckSkuPrice(index,val){
+      var reg = /^[0-9]+(.[0-9]{0,2})?$/g;
+      if(!reg.test(val)){
+        this.$message.error('商品价格只能为数字!');
+        this.goodsList[index].skuPrice='';
+        return false
+      }else if( Number.isNaN(Number(val))){
+        this.$message.error('商品价格只能为数字!');
+        this.goodsList[index].skuPrice='';
+        return false
+      }
+      var num =Math.trunc(val).toString();
+      if (num.length > 7) {
+        this.$message.error('商品价格不能超过7位数!');
+        this.goodsList[index].skuPrice='';
+        return false
+      }
+    },
+    CheckTransfer(index,val){
+      var reg = /[^\d]+$/g;
+      this.goodsList[index].transfer=this.goodsList[index].transfer.replace(reg,'');
+      if (this.goodsList[index].transfer.length>=3) {
+        this.$message.error('商品让利不能超过100%!');
+        this.goodsList[index].transfer='';
+      }
+    },
+    CheckTransfer2(index,val){
+      if(Number.isNaN(Math.trunc(val))){
+        this.$message.error("请填写数字!");
+        this.goodsList[index].transfer ='';
+        return false
+      }
+    },
+    checkPrice(index,val) {
+      if(Number.isNaN(Math.trunc(val))){
+        this.$message.error("请填写数字!");
+        this.goodsList[index].skuPrice ='';
+        return false
+      }
+    },
+    CheckCount(index,val){
+      var test = Math.trunc(val)
+      if(Number.isNaN(test)){
+        this.$message.error("请填写数字!");
+        this.goodsList[index].skuCount ='';
+        return false
+      }
+      if(this.goodsList[index].skuCount.length>8){
+         this.$message.error("库存超过最大限制！");
+         this.goodsList[index].skuCount = '';
+         return false
+      }
+      this.goodsList[index].skuCount= test
+    },
+    checkNum(index,val){
+      if(Number.isNaN(Math.trunc(val))){
+        this.$message.error("请填写数字!");
+        this.goodsList[index].skuCount ='';
+        return false
+      }
+      this.goddsTotal()
+    },
     //商品库存总和
     goddsTotal() {
       let num = this.goodsList.reduce((total, item) => {
@@ -290,47 +354,6 @@ export default {
         return total
       }, 0)
       this.goodsNumber = num
-    },
-    CheckSkuPrice(index,val){
-      var reg = /^[0-9]+(.[0-9]{0,2})?$/g;
-      // this.goodsList[index].skuPrice=this.goodsList[index].skuPrice.replace(reg,'');
-      if(!reg.test(val)){
-        this.$message.error('商品价格只能为数字!');
-        this.goodsList[index].skuPrice='';
-      }
-      if (this.goodsList[index].skuPrice.length>9) {
-        this.$message.error('商品价格不能超过7位数!');
-        this.goodsList[index].skuPrice='';
-      }
-    },
-    CheckTransfer(index,val){
-      var reg = /[^\d]+$/g;
-      this.goodsList[index].transfer=this.goodsList[index].transfer.replace(reg,'');
-      // if(!reg.test(val)){
-      //   this.$message.error('商品让利只能为数字!');
-      //   this.goodsList[index].transfer='';
-      // }
-      if (this.goodsList[index].transfer.length>=3) {
-        this.$message.error('商品让利不能超过100%!');
-        this.goodsList[index].transfer='';
-      }
-    },
-    checkPrice(index,val) {
-      var reg = /^[0-9]+(.[0-9]{0,2})?$/;
-      if (val < 0) {
-        this.$message.error("最小价格不能小于0元");
-        this.goodsList[index].skuPrice = 0;
-        return false
-      }
-    },
-    CheckCount(index,val){
-      var reg = /[^\d]$/g;
-      this.goodsList[index].skuCount = this.goodsList[index].skuCount.replace(reg,'')
-      if(this.goodsList[index].skuCount.length>6){
-         this.$message.error("库存超过最大限制！");
-         this.goodsList[index].skuCount = '';
-         return false
-      }
     },
     checkInput(val) {
       const reg = /^\s*|\s*/g;
@@ -368,7 +391,7 @@ export default {
             obj.attr = that.goodsClass[0].attr;
             obj.attrAnother = that.goodsClass[1].attr;
             obj.AnotherValue = val2[j];
-            obj.skuCount = 0,
+            obj.skuCount = '',
             obj.skuPrice = '';
             obj.transfer = '';
             obj.skuCode = '';
