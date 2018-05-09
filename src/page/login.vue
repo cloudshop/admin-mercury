@@ -61,7 +61,8 @@ export default {
       if (this.iphoneYN == true) {
         var data = { 'username': this.ruleForm.PassName, 'password': this.ruleForm.PassWord }
         this.logining = true;
-        this.$axios.post('api/auth/login/app', data)
+        this.$axios.post('api/auth/login/shop', data)
+        // this.$axios.post('api/auth/login/app', data)
           .then((res) => {
             console.log(res)
             console.log(document.cookie)
@@ -72,9 +73,9 @@ export default {
 
           })
           .catch((error) => {
-            console.log(error.response.status)
+            // console.log(error.response.status)
             if (error.response.status === 400) {
-              this.$message.error("用户名或密码错误!");
+              this.$message.error(error.response.data.title);
               this.ruleForm.PassName = '';
               this.ruleForm.PassWord = '';
             }else if(error.response.status === 500){
