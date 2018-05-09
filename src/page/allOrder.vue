@@ -4,12 +4,7 @@
     <el-row>
       <el-col :span="24">
         <div class="grid-content">
-          <el-button type="primary" plain>全部</el-button>
-          <el-button type="primary" plain>待付款</el-button>
-          <el-button type="primary" plain>待发货</el-button>
-          <el-button type="primary" plain>已发货</el-button>
-          <el-button type="primary" plain>已完成</el-button>
-          <el-button type="primary" plain>已取消</el-button>
+          <span class="navtabs" :class="{on:flat === index}" v-for="(item,index) in navs" @click="filterOrder(index)">{{item}}</span>
         </div>
       </el-col>
     </el-row>
@@ -26,15 +21,15 @@
           <el-date-picker class="selfpinput" v-model="value2" align="right" type="date" placeholder="选择日期" :picker-options="pickerOptions1">
           </el-date-picker>
         </div> -->
-       <!--  <div class="blockin">
+        <!--  <div class="blockin">
           <span class="demonstration">买家:</span>
           <el-input class="selfpinput" placeholder="请输入内容" prefix-icon="el-icon-search" v-model="input21">
           </el-input>
         </div> -->
         <div class="blockin">
           <span class="demonstration">订单编号:</span>
-          <el-input placeholder="请输入内容" v-model="input5" class="input-with-select selfpinput-serch">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model.trim="serchOrderNo" class="input-with-select selfpinput-serch">
+            <el-button slot="append" @click="serching(serchOrderNo)" icon="el-icon-search"></el-button>
           </el-input>
         </div>
       </div>
@@ -43,40 +38,90 @@
     <el-row>
       <el-col :span="24">
         <div class="grid-content bg-purple-dark">
-          <table class="newclass" width="100%">
+          <table class="newclass" width="100%" v-loading="loading" element-loading-text="拼命加载中">
             <thead align=center>
               <tr>
-                <th width="10%">序号</th>
-                <th width="10%">店铺名称</th>
-                <th width="10%">订单编号</th>
-                <th width="10%">总价</th>
-                <th width="10%">运费</th>
-                <th width="10%">订单金额</th>
-                <th width="10%">订单状态</th>
-                <th width="10%">物流信息</th>
-                <th width="10%">快递单号</th>
-                <th width="10%">操作</th>
+                <!-- <th width="8%">序号</th> -->
+                <!-- <th width="10%">店铺名称</th> -->
+                <th width="17%">订单编号</th>
+                <th width="12%">总价</th>
+                <th width="12%">运费</th>
+                <th width="14%">订单状态</th>
+                <th width="15%">物流信息</th>
+                <th width="15%">快递单号</th>
+                <th width="15%">操作</th>
               </tr>
             </thead>
             <tbody>
               <!-- 商品单价、让利、库存、货号列表 -->
               <tr v-for="(item,index) in listData">
-                <td v-text="item.shopId">1</td>
-                <td>2</td>
-                <td v-text="item.orderNo">3</td>
+                <td v-text="item.orderNo"></td>
                 <td>{{item.payment + '元'}}</td>
                 <td>{{item.postFee + '元'}}</td>
-                <td>3</td>
-                <td v-text="item.status">3</td>
-                <td v-text="item.shippingName">3</td>
-                <td>3</td>
-                <td><span class="edit edit-dele">删除</span><span class="edit edit-writ">修改</span></td>
+                <td>
+                  <span v-if="item.status === 1">未支付订单</span>
+                  <span v-else-if="item.status === 2">已付款订单(未发货)</span>
+                  <span v-else-if="item.status === 3">已发货</span>
+                  <span v-else-if="item.status === 4">交易完成(已收货)</span>
+                  <span v-else-if="item.status === 5">该交易已关闭</span>
+                </td>
+                <td>
+                  <span v-if="item.shippingName === null">暂无信息</span>
+                  <span v-else="item.shippingName !=== null">{{item.shippingName}}</span>
+                </td>
+                <td>
+                  <span v-if="item.shipingCode === null">暂无信息</span>
+                  <span v-else="item.shipingCode !== null">{{item.shipingCode}}</span>
+                </td>
+                <td>
+                  <!-- <el-button type="primary" :disabled="item.status !== 2" size="small" @click="handleEdit(item)">修改</el-button> -->
+                  <el-button type="primary" :disabled="item.status !== 2" size="small" @click="handleEdit(item)">修改</el-button>
+                  <el-button type="danger" :disabled="item.status !== 4 && item.status !== 5" size="small">删除</el-button>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </el-col>
     </el-row>
+    <el-col :span="24" class="toolbar">
+      <el-pagination background layout="prev, pager, next" :page-size="pageSize" :total="total" :current-page="pageNum" @current-change="handleCurrentChange" @size-change="handleSizeChange" style="text-align:center;margin-top:10px;">
+      </el-pagination>
+    </el-col>
+    <el-dialog title="编辑" :visible.sync="editFormVisible">
+      <div class="goods">
+        <span>订单编号：</span>
+        <span>{{editForm.orderNo}}</span>
+      </div>
+      <div class="goods">
+        <span>总价：</span>
+        <span>{{editForm.payment + '元'}}</span>
+      </div>
+      <div class="goods">
+        <span>运费：</span>
+        <span>{{editForm.postFee + '元'}}</span>
+      </div>
+      <div class="goods">
+        <span>订单状态：</span>
+        <span v-if="editForm.status === 1">未支付订单</span>
+        <span v-else-if="editForm.status === 2">已付款订单(未发货)</span>
+        <span v-else-if="editForm.status === 3">已发货</span>
+        <span v-else-if="editForm.status === 4">交易完成(已收货)</span>
+        <span v-else-if="editForm.status === 5">该交易已关闭</span>
+      </div>
+      <div class="goods">
+        <span>物流信息：</span>
+        <input type="text" class="goodsinput" v-model.trim="editForm.shippingName" placeholder="请填写物流公司名称！" />
+      </div>
+      <div class="goods">
+        <span>快递单号：</span>
+        <input type="text" class="goodsinput" v-model.trim="editForm.shipingCode" placeholder="请填写快递单号！" />
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="close">取消</el-button>
+        <el-button type="primary" @click="submit" :loading="loading" class="title1">提交</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -84,10 +129,19 @@ export default {
   name: "allOrder",
   data() {
     return {
-      listData:[],
+      flat: 0,
+      navs: ['全部', '待付款', '待发货', '已发货', '已完成', '已取消'],
+      total: 36, //总页数
+      pageNum: 1,
+      pageSize: 10,
+      loading: false,
+      editForm: {},
+      editFormVisible: false,
+      ordetData: [],
+      listData: [],
       input2: '',
       input21: '',
-      input5: '',
+      serchOrderNo: '',
       value2: '',
       pickerOptions1: {
         disabledDate(time) {
@@ -120,7 +174,7 @@ export default {
 
   },
   created() {
-        
+
   },
   mounted() {
     this.getAllOrder();
@@ -128,19 +182,90 @@ export default {
   computed: {
 
   },
+  filter: {
+    // serching(){
+    //   this.listData = this.listData.filter()
+    // }
+  },
   methods: {
-    getAllOrder(){
+    serching(val) {
+      this.listData = this.ordetData.filter((item) => {
+        return item.orderNo === val
+      })
+    },
+    filterOrder(val) {
+      this.serchOrderNo = '';
+      this.flat = val;
+      if (val === 0) {
+        this.listData = this.ordetData
+      } else {
+        this.listData = this.ordetData.filter((item) => {
+          return item.status === val
+        })
+      }
+      console.log(this.listData)
+    },
+    getAllOrder() {
+      this.loading = true;
       const url = 'api/order/api/manage/findOrderByStatus/0'
-        let page = 1;
-        let siez = 10;
-        this.$axios.get(url)
+      this.$axios.get(url)
         .then((res) => {
           console.log(res)
           this.listData = res.data;
+          this.ordetData = res.data;
+          this.loading = false;
         })
-        .catch(function(error) {
+        .catch((error) => {
           console.log(error);
         })
+    },
+    handleEdit(row) {
+      this.editFormVisible = true;
+      // 深拷贝并赋值
+      this.editForm = Object.assign({}, row); //合并对象操作
+      // this.editForm.transfer *=100;
+      console.log(this.editForm)
+    },
+    close() {
+      this.editFormVisible = false;
+    },
+    // 编辑、新增弹窗 提交方法
+    submit() {
+      let data = Object.create(null);
+      data.orderNo = this.editForm.orderNo;
+      data.shippingName = this.editForm.shippingName;
+      data.shipingCode = this.editForm.shipingCode;
+
+      // console.log(Qs.stringify(data))
+      const url = 'api/order/api/updateOrderByShip'
+      this.$confirm("确认提交吗？", "提示", {}).then(() => {
+        this.loading = true;
+        // 此处应该请求数据
+
+        this.editFormVisible = false;
+        this.$axios.post(url, data).then((res) => {
+          setTimeout(() => {
+            this.$message({
+              message: "提交成功！",
+              type: "success"
+            });
+            this.loading = false;
+            this.getAllOrder();
+          }, 2000);
+        }).catch((err) => {
+          this.$message.error(err.response.data.title);
+          this.editFormVisible = false;
+          this.loading = false;
+        })
+      });
+    },
+    handleSizeChange(val) {
+      // console.log(`每页 ${val} 条`);
+    },
+    // currentPage 改变时会触发
+    handleCurrentChange(val) {
+      this.pageNum = val;
+      // this.getAllOrder()
     }
   }
 };
@@ -200,8 +325,10 @@ export default {
 }
 
 .selfpinput-serch {
-  width: 200px!important;
+  width: 250px!important;
 }
+
+
 
 
 /* Table Head */
@@ -248,22 +375,53 @@ export default {
   color: #fff;
 }
 
-.edit{
-    box-sizing: border-box;
-    display: inline-block;
-    padding: 10px;
-    margin: 4px 10px;
-    cursor: pointer;
-    border-radius: 6px;
-    color: #fff;
-    /*border: 1px solid #ccc;*/
-}
-.edit-dele{
-  background: #5caeea;
-}
-.edit-writ{
-  background:#fd8585;
-}
+
+
+
 /************************/
+
+.goodsinput {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.goods {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  padding: 0 20px;
+}
+
+.goods span {
+  display: inline-block;
+  min-width: 80px;
+  padding-right: 20px;
+}
+
+.navtabs {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 1px solid #ccc;
+  margin: 0 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.navtabs:hover {
+  color: #fff;
+  border-color: #3a8ee6;
+  background: #3a8ee6;
+}
+
+.on {
+  color: #fff;
+  border-color: #3a8ee6;
+  background: #3a8ee6;
+}
 
 </style>
