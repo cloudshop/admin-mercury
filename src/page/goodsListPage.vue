@@ -101,7 +101,7 @@ export default {
   },
   methods: {
       CheckSkuPrice(val){
-      var reg = /^[0-9]+(.[0-9]{0,2})?$/g;
+      let reg = /^[0-9]+(.[0-9]{0,2})?$/g;
       if(!reg.test(val)){
         this.$message.error('商品价格只能为数字!');
         this.editForm.price='';
@@ -111,7 +111,7 @@ export default {
         this.editForm.price='';
         return false
       }
-      var num =Math.trunc(val).toString();
+      let num =Math.trunc(val).toString();
       if (num.length > 7) {
         this.$message.error('商品价格不能超过7位数!');
         this.editForm.price='';
@@ -119,7 +119,7 @@ export default {
       }
     },
     CheckTransfer(val){
-      var reg = /[^\d]+$/g;
+      let reg = /[^\d]+$/g;
       this.editForm.transfer=this.editForm.transfer.replace(reg,'');
       if (this.editForm.transfer.length>=3) {
         this.$message.error('商品让利不能超过100%!');
@@ -141,7 +141,7 @@ export default {
       }
     },
     CheckCount(val){
-      var test = Math.trunc(val)
+      let test = Math.trunc(val)
       if(Number.isNaN(test)){
         this.$message.error("请填写数字!");
         this.editForm.count ='';
@@ -180,25 +180,23 @@ export default {
       this.editFormVisible = false;
     },
     //显示编辑界面
-    handleEdit: function(index, row) {
+    handleEdit(row) {
       this.editFormVisible = true;
       // 深拷贝并赋值
       this.editForm = Object.assign({}, row); //合并对象操作
       this.editForm.transfer *=100;
     },
     // 删除方法
-    handleDelete: function(index, row) {
+    handleDelete(index, row) {
       const status = 1;
       const url = 'api/product/api/product/handle/'
       const data = row.skuId;
+      // console.log(data)
       this.$confirm("确认下架商品吗?", "提示", {}).then(() => {
         this.loading = true;
         this.$axios.post(url+status, {"id":data},{headers:{'Content-Type': 'application/json'}}).then((res) => {
           setTimeout(() => {
-            this.$message({
-              message: "提交成功！",
-              type: "success"
-            });
+            this.$message({ message: "提交成功！",type: "success"});
             this.getAlllist();
             this.loading = false;
           }, 2000);
@@ -211,7 +209,7 @@ export default {
       });
     },
     // 编辑、新增弹窗 提交方法
-    submit: function() {
+    submit() {
       let status = 0;
       let data = Object.create(null);
       data.id = this.editForm.skuId;
