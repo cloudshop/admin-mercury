@@ -26,7 +26,12 @@ export default {
                 type: "warning"
             })
                 .then(() => {
-                    window.sessionStorage.clear()
+                    // window.sessionStorage.clear()
+                    this.$axios({
+                        method: 'post',
+                        url: 'auth/logout/app'
+                    });
+                     this.$store.commit(types.LOGOUT);
                     this.$router.push({ path: "/login" });
                     this.$message({
                         type: "success",
