@@ -20,7 +20,7 @@
 </template>
 <script type="text/ecmascript-6">
 // 导入登录接口方法
-// import { login } from "@/api/getData";
+import * as types from '../../store/types';
 export default {
   name: "login",
   data() {
@@ -53,22 +53,21 @@ export default {
       }
     },
     btn() {
-      if (!this.ruleForm.PassWord) {
-        this.$message.error("请填写密码！");
-        this.logining = false;
-        return false;
+      if(this.iphoneYN !== true) {
+        alert('手机号输入错误')
+        return
+      }
+      if(this.PassName == '' || this.PassWord =='') {
+        alert('请输入用户名或密码')
+        return
       }
       if (this.iphoneYN == true) {
         var data = { 'username': this.ruleForm.PassName, 'password': this.ruleForm.PassWord }
-        this.logining = true;
-        this.$axios.post('api/auth/login/shop', data)
-        // this.$axios.post('api/auth/login/app', data)
-          .then((res) => {
+      this.$store.dispatch(types.LOGIN, {username: this.PassName, password: this.PassWord, registrationID: this.registrationID}).
+         .then((res) => {
             // console.log(res)
             // console.log(document.cookie)
             setTimeout(() => {
-              window.sessionStorage.setItem('name',this.ruleForm.PassName)
-              this.logining = false;
               this.$router.push({ path: "/sllerIndex" });
             }, 2000);
 
@@ -82,7 +81,6 @@ export default {
             }else if(error.response.status === 500){
               this.$message.error("服务器繁忙，请耐心等待");
             }
-            this.logining = false;
             return false;
           });
       } else {
