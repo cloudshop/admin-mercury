@@ -2,7 +2,7 @@
     <el-menu class="el-menu-demo" mode="horizontal" background-color="#334157" text-color="#fff" active-text-color="#fff">
         <div class="logobox">后台管理平台</div>
         <el-submenu index="2" class="submenu">
-            <template slot="title">admin</template>
+            <template slot="title">{{name}}</template>
             <!-- <el-menu-item index="2-1">设置</el-menu-item> -->
             <!-- <el-menu-item @click="content()" index="2-2">个人中心</el-menu-item> -->
             <el-menu-item @click="exit()" index="2-3">退出</el-menu-item>
@@ -14,6 +14,7 @@ export default {
     name: "navcon",
     data() {
         return {
+            name:window.sessionStorage.getItem('name')
         };
     },
     methods: {
@@ -25,7 +26,8 @@ export default {
                 type: "warning"
             })
                 .then(() => {
-                     this.$router.push({ path: "/login" });
+                    window.sessionStorage.clear()
+                    this.$router.push({ path: "/login" });
                     this.$message({
                         type: "success",
                         message: "已退出登录!"

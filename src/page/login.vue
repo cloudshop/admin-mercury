@@ -64,9 +64,10 @@ export default {
         this.$axios.post('api/auth/login/shop', data)
         // this.$axios.post('api/auth/login/app', data)
           .then((res) => {
-            console.log(res)
-            console.log(document.cookie)
+            // console.log(res)
+            // console.log(document.cookie)
             setTimeout(() => {
+              window.sessionStorage.setItem('name',this.ruleForm.PassName)
               this.logining = false;
               this.$router.push({ path: "/sllerIndex" });
             }, 2000);

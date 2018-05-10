@@ -45,11 +45,10 @@ const router = new Router({
     {
         path: '/index',
         name: '首页',
-        // component: sllerIndex,
         component: index,
-        // meta: {
-        //     requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-        // },
+        meta: {
+            requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
         redirect:'sllerIndex',
         children: [{
             path: '/sllerIndex',
@@ -61,33 +60,42 @@ const router = new Router({
         path: '/index',
         name: '商品管理',
         component: index,
-        // meta: {
-        //     requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-        // },
+        meta: {
+            requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
         iconCls: 'el-icon-tickets',
         children: [{
             path: '/goodsAddNew',
             name: '商品发布',
-            component: goodsAddNew
+            component: goodsAddNew,
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            }
         }, 
         {
             path: '/goodsListPage',
             name: '商品列表',
-            component: goodsListPage
+            component: goodsListPage,
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            }
         }]
     }, 
     {
         path: '/index',
         name: '订单管理',
         component: index,
-        // meta: {
-        //     requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
-        // },
+        meta: {
+            requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+        },
         iconCls: 'el-icon-menu',
         children: [{
             path: '/allOrder',
             name: '全部订单',
-            component: allOrder
+            component: allOrder,
+            meta: {
+                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            }
         }
         // , 
         // {
@@ -133,21 +141,21 @@ const router = new Router({
     ]
 })
 
-// router.beforeEach((to, from, next) => {
-//     if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
-//         if (store.state.token) {  // 通过vuex state获取当前的token是否存在
-//             next();
-//         }
-//         else {
-//             next({
-//                 path: '/login',
-//                 query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
-//             })
-//         }
-//     }
-//     else {
-//         next();
-//     }
-// })
+router.beforeEach((to, from, next) => {
+    if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
+        if (window.sessionStorage.getItem('name') !== null) {  // 通过vuex state获取当前的token是否存在
+            next();
+        }
+        else {
+            next({
+                path: '/login',
+                query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+            })
+        }
+    }
+    else {
+        next();
+    }
+})
 
  export default router
