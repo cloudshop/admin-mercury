@@ -207,7 +207,7 @@ export default {
     },
     getAllOrder() {
       this.loading = true;
-      const url = 'api/order/api/manage/findOrderByStatus/0'
+      const url = 'order/api/manage/findOrderByStatus/0'
       this.$axios.get(url)
         .then((res) => {
           // console.log(res)
@@ -237,7 +237,7 @@ export default {
       data.shipingCode = this.editForm.shipingCode;
 
       // console.log(Qs.stringify(data))
-      const url = 'api/order/api/updateOrderByShip'
+      const url = 'order/api/updateOrderByShip'
       this.$confirm("确认提交吗？", "提示", {}).then(() => {
         this.loading = true;
         // 此处应该请求数据
@@ -261,7 +261,7 @@ export default {
     },
     // 删除方法
     handleDelete(row) {
-      const url = 'api/order/api/manage/deleteOrder/'
+      const url = 'order/api/manage/deleteOrder/'
       const data = row.id;
       // console.log(url+data)
       this.$confirm("确认删除吗?", "提示", {}).then(() => {

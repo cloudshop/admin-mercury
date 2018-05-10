@@ -163,7 +163,7 @@ export default {
     },
     getAlllist() {
       this.loading = true;
-      const url = 'api/product/api/product/skuStore'
+      const url = 'product/api/product/skuStore'
       this.$axios.post(url,{pageNum: this.pageNum, pageSize:this.pageSize})
         .then((res) => {
           this.listData = res.data.skuList;
@@ -190,7 +190,7 @@ export default {
     // 删除方法
     handleDelete(index, row) {
       const status = 1;
-      const url = 'api/product/api/product/handle/'
+      const url = 'product/api/product/handle/'
       const data = row.skuId;
       // console.log(data)
       this.$confirm("确认下架商品吗?", "提示", {}).then(() => {
@@ -217,7 +217,7 @@ export default {
       data.price = this.editForm.price;
       data.count = this.editForm.count;
       data.profit = this.editForm.transfer;
-      const url = 'api/product/api/product/handle/'
+      const url = 'product/api/product/handle/'
       this.$confirm("确认提交吗？", "提示", {}).then(() => {
         this.loading = true;
         // 此处应该请求数据
