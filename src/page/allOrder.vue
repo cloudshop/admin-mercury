@@ -76,7 +76,7 @@
                 <td>
                   <!-- <el-button type="primary" :disabled="item.status !== 2" size="small" @click="handleEdit(item)">修改</el-button> -->
                   <el-button type="primary" :disabled="item.status !== 2" size="small" @click="handleEdit(item)">修改</el-button>
-                  <el-button type="danger" :disabled="item.status !== 4 && item.status !== 5" size="small">删除</el-button>
+                  <el-button type="danger" :disabled="item.status !== 4 && item.status !== 5" size="small" @click="handleDelete(item)">删除</el-button>
                 </td>
               </tr>
             </tbody>
@@ -210,7 +210,7 @@ export default {
       const url = 'api/order/api/manage/findOrderByStatus/0'
       this.$axios.get(url)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           this.listData = res.data;
           this.ordetData = res.data;
           this.loading = false;
@@ -224,7 +224,7 @@ export default {
       // 深拷贝并赋值
       this.editForm = Object.assign({}, row); //合并对象操作
       // this.editForm.transfer *=100;
-      console.log(this.editForm)
+      // console.log(this.editForm)
     },
     close() {
       this.editFormVisible = false;
@@ -257,6 +257,28 @@ export default {
           this.editFormVisible = false;
           this.loading = false;
         })
+      });
+    },
+    // 删除方法
+    handleDelete(row) {
+      const url = 'api/order/api/manage/deleteOrder/'
+      const data = row.id;
+      // console.log(url+data)
+      this.$confirm("确认删除吗?", "提示", {}).then(() => {
+        this.loading = true;
+        this.$axios.get(url+112345453).then((res) => {
+          console.log(res.data)
+          setTimeout(() => {
+            this.$message({ message: "删除成功！",type: "success"});
+            this.getAllOrder();
+            this.loading = false;
+          }, 2000);
+        }).catch((err) => {
+          let msg = err.response.data.title
+          this.$message.error(msg);
+          this.loading = false;
+        })
+
       });
     },
     handleSizeChange(val) {
