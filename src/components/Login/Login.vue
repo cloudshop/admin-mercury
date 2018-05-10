@@ -1,5 +1,5 @@
 <template>
-  <div class="login-wrap">
+  <div class="login-wrap" :style ="imgs">
     <el-form label-position="left" :model="ruleForm" ref="ruleForm" label-width="0px" class="demo-ruleForm login-container">
       <h2 class="title">贡融积分<span class="logtitle"></span>商家管理平台</h2>
       <el-form-item prop="PassName">
@@ -25,6 +25,10 @@ export default {
   name: "login",
   data() {
     return {
+      imgs:{
+         // background-image: url("/assets/img/bg.png");
+        backgroundImage: "url(" + require("../../assets/img/bg.png") + ")",
+      },
       iphoneYN: false,
       logining: false,
       ruleForm: {
@@ -42,10 +46,8 @@ export default {
     upperCase() {
       var theinput = this.ruleForm.PassName;
       var p1 = /^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/;
-      // var p2 = /^[\^\\%@&\*~'\?\/\<\>\|\"`]+$/;
       if (p1.test(theinput) == false) {
         this.$message.error("请填写正确电话号码!");
-        // alert("!");
         this.ruleForm.PassName = "";
         return false
       } else {
@@ -62,8 +64,8 @@ export default {
         return
       }
       if (this.iphoneYN == true) {
-        var data = { 'username': this.ruleForm.PassName, 'password': this.ruleForm.PassWord }
-      this.$store.dispatch(types.LOGIN, {username: this.PassName, password: this.PassWord, registrationID: this.registrationID}).
+        // var data = { 'username': this.ruleForm.PassName, 'password': this.ruleForm.PassWord }
+      this.$store.dispatch(types.LOGIN, {username: this.ruleForm.PassName, password: this.ruleForm.PassWord})
          .then((res) => {
             // console.log(res)
             // console.log(document.cookie)
@@ -87,13 +89,7 @@ export default {
         this.$message.error("请填写正确电话号码!");
         return false
       }
-
     }
-    // ,
-    // var p1=/^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/; 
-    // register() {
-    //   this.$router.push({ path: "/register" });
-    // }
   }
 };
 
@@ -104,7 +100,7 @@ export default {
   width: 100%;
   height: 100%;
   padding-top: 15%;
-  background-image: url("../assets/img/bg.png");
+  /*background-image: url("/assets/img/bg.png");*/
   background-color: #112346;
   background-repeat: no-repeat;
   background-position: center right;

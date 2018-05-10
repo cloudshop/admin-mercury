@@ -114,8 +114,8 @@ export default new Vuex.Store({
         },
         auth: {
           tokenHost: 'http://app.grjf365.com:9080/api',
-          tokenPath: '/auth/login/app',
-          revokePath: '/auth/logout/app'
+          tokenPath: '/auth/login/shop',
+          revokePath: '/auth/logout/shop'
         },
         http: {
           headers: {
@@ -182,8 +182,8 @@ export default new Vuex.Store({
         },
         auth: {
           tokenHost: 'http://app.grjf365.com:9080/api',
-          tokenPath: '/auth/login/app',
-          revokePath: '/auth/logout/app'
+          tokenPath: '/auth/login/shop',
+          revokePath: '/auth/logout/shop'
         },
         http: {
           headers: {

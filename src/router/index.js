@@ -1,8 +1,13 @@
 // 导入组件
 import Vue from 'vue'
 import Router from 'vue-router'
+
+import * as types from '../store/types'
+import store from '../store/store'
+import storePlugin from '../storePlugin'
+
 // 登录
-const login         = r => require.ensure([], () => r(require('@/page/login')), 'login');
+const login         = r => require.ensure([], () => r(require('@/components/login/login')), 'login');
 // 注册
 const register      = r => require.ensure([], () => r(require('@/page/register')), 'register');
 // 首页
@@ -143,8 +148,8 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(r => r.meta.requireAuth)) {
-        console.log(this.$store.state.token)
-        if (this.$store.state.token) {
+        console.log(store.state.token)
+        if (store.state.token) {
             next();
         }
         else {

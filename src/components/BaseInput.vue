@@ -25,6 +25,7 @@ export default {
       this.$emit('input', result.value)
     },
     formatValue: function() {
+      console.log(this.$refs.input.value)
         if(this.$refs.input.value.length>9){
             this.$message.error('商品价格不能超过7位数!');
             this.$refs.input.value = 0;

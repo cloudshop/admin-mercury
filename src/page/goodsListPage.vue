@@ -78,7 +78,7 @@ export default {
       loading: false, //是显示加载
       searchName: "", //搜索的名字
       editFormVisible: false, //控制编辑页面显示与隐藏
-      total: 36, //总页数
+      total: 0, //总页数
       pageNum:1,
       pageSize:10,
       //新增编辑字段
