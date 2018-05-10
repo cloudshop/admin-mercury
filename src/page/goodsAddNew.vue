@@ -300,16 +300,21 @@ export default {
       }
     },
     CheckTransfer(index,val){
-      var reg = /[^\d]+$/g;
+      var reg = /^[\d]+$/g;
       if(!reg.test(val)){
-        this.$message.error("请填写数字!");
-        this.goodsList[index].transfer ='';
+        this.$message.error('只能填写数字!');
+        this.goodsList[index].transfer='';
+        return false
+      }else if( Number.isNaN(Number(val))){
+        this.$message.error('只能填写数字!');
+        this.goodsList[index].transfer='';
         return false
       }
-      this.goodsList[index].transfer=this.goodsList[index].transfer.replace(reg,'');
-      if (this.goodsList[index].transfer.length>=3) {
-        this.$message.error('商品让利不能超过100%!');
+      var num =Math.trunc(val).toString();
+      if (num.length > 2) {
+        this.$message.error('商品让利不能超过100%!!');
         this.goodsList[index].transfer='';
+        return false
       }
     },
     CheckTransfer2(index,val){
@@ -320,6 +325,7 @@ export default {
       }
     },
     checkPrice(index,val) {
+
       if(Number.isNaN(Math.trunc(val))){
         this.$message.error("请填写数字!");
         this.goodsList[index].skuPrice ='';

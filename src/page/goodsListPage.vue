@@ -180,11 +180,12 @@ export default {
       this.editFormVisible = false;
     },
     //显示编辑界面
-    handleEdit(row) {
+    handleEdit(index,row) {
       this.editFormVisible = true;
       // 深拷贝并赋值
       this.editForm = Object.assign({}, row); //合并对象操作
       this.editForm.transfer *=100;
+      console.log(this.editForm)
     },
     // 删除方法
     handleDelete(index, row) {
