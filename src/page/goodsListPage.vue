@@ -170,7 +170,7 @@ export default {
           this.total = res.data.totalCount;
           this.loading = false;
         })
-        .catch(function(error) {
+        .catch((error)=> {
           this.$message("获取信息失败");
           this.loading = false;
         })
