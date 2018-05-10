@@ -46,7 +46,7 @@
 	                        type: 'success',
 	                        message: '退出成功'
 	                    });
-	                    this.$axios.post('api/auth/logout/app').then((res)=>{
+	                    this.$axios.post('auth/logout/app').then((res)=>{
 	                    	console.log(res)
 	                    }).catch((err)=>{
 	                    	console.log(err)

@@ -540,7 +540,7 @@ export default {
       //   return false
       // }
       //api 地址
-      let url = 'api/product/api/product/publish';
+      let url = 'product/api/product/publish';
       //创建提交data对象
       let data = Object.create(null);
 
@@ -584,7 +584,7 @@ export default {
     subImage() {
       let data = Object.create(null);
       data = this.goodsImgList
-      const url = 'api/product/api/product/skuImage';
+      const url = 'product/api/product/skuImage';
       this.$axios.post(url, data, ).then((res) => {
         this.$message.success('商品图片上传成功！');
         this.next()
