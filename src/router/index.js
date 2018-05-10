@@ -7,7 +7,7 @@ import store from '../store/store'
 import storePlugin from '../storePlugin'
 
 // 登录
-const login         = r => require.ensure([], () => r(require('@/components/login/login')), 'login');
+const login         = r => require.ensure([], () => r(require('@/components/Login/Login')), 'login');
 // 注册
 const register      = r => require.ensure([], () => r(require('@/page/register')), 'register');
 // 首页
