@@ -1,6 +1,6 @@
 // 导入组件
-import Vue from 'vue';
-import Router from 'vue-router';
+import Vue from 'vue'
+import Router from 'vue-router'
 // 登录
 const login         = r => require.ensure([], () => r(require('@/page/login')), 'login');
 // 注册
