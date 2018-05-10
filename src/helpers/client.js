@@ -34,7 +34,7 @@ const credentials = {
         secret: 'w1eb_app'
     },
     auth: {
-        tokenHost: 'http://localhost',
+        tokenHost: window.location.origin,
         tokenPath: 'api/auth/login/app'
     },
     http: {
