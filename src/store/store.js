@@ -114,8 +114,8 @@ export default new Vuex.Store({
         },
         auth: {
           tokenHost: window.location.origin,
-          tokenPath: 'auth/login/app',
-          revokePath: 'auth/logout/app'
+          tokenPath: 'api/auth/login/app',
+          revokePath: 'api/auth/logout/app'
         },
         http: {
           headers: {

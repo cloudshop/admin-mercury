@@ -35,7 +35,7 @@ const credentials = {
     },
     auth: {
         tokenHost: window.location.origin,
-        tokenPath: 'auth/login/app'
+        tokenPath: 'api/auth/login/shop'
     },
     http: {
         headers: {
