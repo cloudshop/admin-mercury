@@ -131,8 +131,8 @@ export default {
     return {
       flat: 0,
       navs: ['全部', '待付款', '待发货', '已发货', '已完成', '已取消'],
-      total: 36, //总页数
-      pageNum: 1,
+      total: 0, //总页数
+      pageNum: 0,
       pageSize: 10,
       loading: false,
       editForm: {},
@@ -207,12 +207,13 @@ export default {
     },
     getAllOrder() {
       this.loading = true;
-      const url = 'order/api/manage/findOrderByStatus/0'
-      this.$axios.get(url)
+      const url = 'order/api/manage/findMercuOrderByStatus'
+      this.$axios.post(url,{page:this.pageNum,size:this.pageSize,status:0})
         .then((res) => {
-          // console.log(res)
-          this.listData = res.data;
-          this.ordetData = res.data;
+          console.log(res)
+          this.listData = res.data.proOrder;
+          this.ordetData = res.data.proOrder;
+          this.total = res.data.proOrderAmount;
           this.loading = false;
         })
         .catch((error) => {
@@ -266,7 +267,7 @@ export default {
       // console.log(url+data)
       this.$confirm("确认删除吗?", "提示", {}).then(() => {
         this.loading = true;
-        this.$axios.get(url+112345453).then((res) => {
+        this.$axios.get(url+data).then((res) => {
           console.log(res.data)
           setTimeout(() => {
             this.$message({ message: "删除成功！",type: "success"});
