@@ -138,7 +138,6 @@ export default new Vuex.Store({
 
       oauth2.ownerPassword.getToken(tokenConfig, (error, result) => {
         if (error) {
-          console.log('Access Token Error','abcd123');
           console.log(error);
           if (error.context.status === 500) {
             alert('服务器繁忙，请耐心等待')
@@ -155,7 +154,6 @@ export default new Vuex.Store({
         context.commit(types.LOGIN, result);
         context.commit(types.USERPHONE, userInput.username);
         context.commit(types.PASSWORD, userInput.password);
-        console.log(result,'1111111111111111111111111');
         var val = {
           "func": "closeCurrent",
           "param": {
