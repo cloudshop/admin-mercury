@@ -57,7 +57,7 @@ export default {
     border: none;
 }
 .submenu {
-    float: right;
+    float: right!important;
 }
 .logobox {
     position: absolute;
