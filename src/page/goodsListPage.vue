@@ -263,6 +263,7 @@ export default {
     },
     // currentPage 改变时会触发
     handleCurrentChange(val) {
+      console.log(val)
       this.pageNum = val;
       this.getAlllist()
     }

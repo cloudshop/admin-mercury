@@ -132,7 +132,7 @@ export default {
       flat: 0,
       navs: ['全部', '待付款', '待发货', '已发货', '已完成', '已取消'],
       total: 0, //总页数
-      pageNum: 0,
+      pageNum: 1,
       pageSize: 10,
       loading: false,
       editForm: {},
@@ -288,7 +288,7 @@ export default {
     // currentPage 改变时会触发
     handleCurrentChange(val) {
       this.pageNum = val;
-      // this.getAllOrder()
+      this.getAllOrder()
     }
   }
 };

@@ -151,10 +151,15 @@
         </el-dialog>
       </div>
     </div>
+     <div class="goodcontent" v-show="active === 3"> 
+      <p style="text-align:center">上传商品图片</p>
+    </div>
     <el-row type="flex" class="row-bg" justify="center" style="padding: 20px 0;">
       <el-button class="selfbtn" type="primary" @click="submitForm" v-show="active === 0">下一步</el-button>
       <el-button class="selfbtn" type="primary" @click="prev" v-show="active === 1">上一步</el-button>
       <el-button class="selfbtn"  type="primary" @click="subImage" v-show="active === 1">提交</el-button>
+      <el-button class="selfbtn"  type="primary" @click="tiaozhuan" v-show="active === 3">商品列表</el-button>
+      <el-button class="selfbtn"  type="primary" @click="fabu" v-show="active === 3">继续发布</el-button>
     </el-row>
   </div>
 </template>
@@ -508,6 +513,7 @@ export default {
     },
     // 点击下一步进行提交校验 、通过->步骤条加一
     submitForm() {
+      
       //提交前 对所有的数据进行校验
       // if(!this.type1 && !this.type2 && !this.type3){
       //   this.$message.error("请选择商品分类！");
@@ -591,7 +597,8 @@ export default {
         if (res.data === 'success') {
           setTimeout(() => {
             this.logining = false;
-            this.$router.push({ path: "/goodsListPage" });
+            this.next()
+            // this.$router.push({ path: "/goodsListPage" });
           }, 2000);
         }
       }).catch((err) => {
@@ -599,6 +606,12 @@ export default {
         this.$message.error("商品图片上传失败，请检查图片是否合规！");
         return false
       })
+    },
+    tiaozhuan(){
+      this.$router.push({ path: "/goodsListPage" });
+    },
+    fabu(){
+      window.location.reload()
     },
     //stape 进度条 下一步
     next() {
