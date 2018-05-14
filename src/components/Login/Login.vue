@@ -26,7 +26,6 @@ export default {
   data() {
     return {
       imgs:{
-         // background-image: url("/assets/img/bg.png");
         backgroundImage: "url(" + require("../../assets/img/bg.png") + ")",
       },
       iphoneYN: false,
@@ -64,18 +63,15 @@ export default {
         return
       }
       if (this.iphoneYN == true) {
-        // var data = { 'username': this.ruleForm.PassName, 'password': this.ruleForm.PassWord }
       this.$store.dispatch(types.LOGIN, {username: this.ruleForm.PassName, password: this.ruleForm.PassWord})
          .then((res) => {
-            console.log(res,123)
-            // console.log(document.cookie)
-            // setTimeout(() => {
-            //   this.$router.push({ path: "/sllerIndex" });
-            // }, 2000);
+            window.sessionStorage.setItem('name',this.ruleForm.PassName)
+            setTimeout(() => {
+              this.$router.push({ path: "/sllerIndex" });
+            }, 2000);
 
           })
           .catch((error) => {
-            // console.log(error.response.status)
             if (error.response.status === 400) {
               this.$message.error(error.response.data.title);
               this.ruleForm.PassName = '';
@@ -100,7 +96,6 @@ export default {
   width: 100%;
   height: 100%;
   padding-top: 15%;
-  /*background-image: url("/assets/img/bg.png");*/
   background-color: #112346;
   background-repeat: no-repeat;
   background-position: center right;

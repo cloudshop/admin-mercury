@@ -28,8 +28,6 @@
     </div>
 </template>
 <script type="text/ecmascript-6">
-// 导入登录接口方法
-import { login } from "@/api/getData";
 export default {
     name: "register",
     data() {
@@ -62,7 +60,6 @@ export default {
     },
     // 里面的函数只有调用才会执行
     methods: {
-        // var p1=/^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/; 
       
     }
 };

@@ -22,7 +22,7 @@ export default {
     }
 };
 </script>
-<style>
+<style scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     border: none;
     text-align: left;

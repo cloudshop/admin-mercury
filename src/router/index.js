@@ -66,7 +66,7 @@ const router = new Router({
         name: '商品管理',
         component: index,
         meta: {
-            requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            requireAuth: true,  
         },
         iconCls: 'el-icon-tickets',
         children: [{
@@ -74,7 +74,7 @@ const router = new Router({
             name: '商品发布',
             component: goodsAddNew,
             meta: {
-                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                requireAuth: true, 
             }
         }, 
         {
@@ -82,7 +82,7 @@ const router = new Router({
             name: '商品列表',
             component: goodsListPage,
             meta: {
-                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                requireAuth: true, 
             }
         }]
     }, 
@@ -91,7 +91,7 @@ const router = new Router({
         name: '订单管理',
         component: index,
         meta: {
-            requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+            requireAuth: true,  
         },
         iconCls: 'el-icon-menu',
         children: [{
@@ -99,7 +99,7 @@ const router = new Router({
             name: '全部订单',
             component: allOrder,
             meta: {
-                requireAuth: true,  // 添加该字段，表示进入这个路由是需要登录的
+                requireAuth: true, 
             }
         }
         // , 
@@ -110,58 +110,26 @@ const router = new Router({
         // }
         ]
     }
-    // , 
-    // {
-    //     path: '/index',
-    //     name: '分页&轮播图',
-    //     component: index,
-    //     iconCls: 'el-icon-picture-outline',
-    //     children: [{
-    //         path: '/paging',
-    //         name: '分页',
-    //         component: paging
-    //     }, 
-    //     {
-    //         path: '/shuffling',
-    //         name: '轮播图',
-    //         component: shuffling
-    //     }]
-    // }, 
-    // {
-    //     path: '/index',
-    //     name: '页面',
-    //     component: index,
-    //     iconCls: 'el-icon-news',
-    //     children: [{
-    //         path: '/error',
-    //         name: '404',
-    //         component: error
-    //     }, 
-    //     {
-    //         path: '/errorf',
-    //         name: '401',
-    //         component: errorf
-    //     }]
-    // }
+
     ]
 })
 
-// router.beforeEach((to, from, next) => {
-//     if (to.matched.some(r => r.meta.requireAuth)) {
-//         console.log(store.state.token)
-//         if (store.state.token) {
-//             next();
-//         }
-//         else {
-//             next({
-//                 path: '/login',
-//                 query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
-//             })
-//         }
-//     }
-//     else {
-//         next();
-//     }
-// })
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(r => r.meta.requireAuth)) {
+        console.log(store.state.token)
+        if (store.state.token) {
+            next();
+        }
+        else {
+            next({
+                path: '/login',
+                query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+            })
+        }
+    }
+    else {
+        next();
+    }
+})
 
  export default router
