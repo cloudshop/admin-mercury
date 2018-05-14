@@ -11,7 +11,8 @@ import storePlugin from '../storePlugin'
 
 // axios 配置
 axios.defaults.timeout = 5000;
-axios.defaults.baseURL = 'api';
+// axios.defaults.baseURL = 'api';
+axios.defaults.baseURL='http://app.grjf365.com/api/';
 
 /*是否有请求正在刷新token*/
 window.isRefreshing = false

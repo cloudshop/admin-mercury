@@ -146,22 +146,22 @@ const router = new Router({
     ]
 })
 
-router.beforeEach((to, from, next) => {
-    if (to.matched.some(r => r.meta.requireAuth)) {
-        console.log(store.state.token)
-        if (store.state.token) {
-            next();
-        }
-        else {
-            next({
-                path: '/login',
-                query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
-            })
-        }
-    }
-    else {
-        next();
-    }
-})
+// router.beforeEach((to, from, next) => {
+//     if (to.matched.some(r => r.meta.requireAuth)) {
+//         console.log(store.state.token)
+//         if (store.state.token) {
+//             next();
+//         }
+//         else {
+//             next({
+//                 path: '/login',
+//                 query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+//             })
+//         }
+//     }
+//     else {
+//         next();
+//     }
+// })
 
  export default router

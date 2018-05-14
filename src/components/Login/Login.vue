@@ -67,11 +67,11 @@ export default {
         // var data = { 'username': this.ruleForm.PassName, 'password': this.ruleForm.PassWord }
       this.$store.dispatch(types.LOGIN, {username: this.ruleForm.PassName, password: this.ruleForm.PassWord})
          .then((res) => {
-            // console.log(res)
+            console.log(res,123)
             // console.log(document.cookie)
-            setTimeout(() => {
-              this.$router.push({ path: "/sllerIndex" });
-            }, 2000);
+            // setTimeout(() => {
+            //   this.$router.push({ path: "/sllerIndex" });
+            // }, 2000);
 
           })
           .catch((error) => {

@@ -114,7 +114,7 @@ export default new Vuex.Store({
         },
         auth: {
           tokenHost: window.location.origin,
-          tokenPath: 'api/auth/login/shop',
+          tokenPath: 'http://app.grjf365.com:9080/auth/login/shop',
           revokePath: 'api/auth/logout/shop'
         },
         http: {
@@ -138,12 +138,12 @@ export default new Vuex.Store({
 
       oauth2.ownerPassword.getToken(tokenConfig, (error, result) => {
         if (error) {
-          console.log('Access Token Error', error.message);
-
-          if (error.response.status === 500) {
+          console.log('Access Token Error','abcd123');
+          console.log(error);
+          if (error.context.status === 500) {
             alert('服务器繁忙，请耐心等待')
           }
-          if (error.response.status === 400) {
+          if (error.context.status === 400) {
             alert('用户名密码错误')
           }
           return console.log('Access Token Error', error.message);
@@ -155,7 +155,7 @@ export default new Vuex.Store({
         context.commit(types.LOGIN, result);
         context.commit(types.USERPHONE, userInput.username);
         context.commit(types.PASSWORD, userInput.password);
-
+        console.log(result,'1111111111111111111111111');
         var val = {
           "func": "closeCurrent",
           "param": {
