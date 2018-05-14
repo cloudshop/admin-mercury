@@ -140,10 +140,10 @@ export default new Vuex.Store({
         if (error) {
           console.log('Access Token Error', error.message);
 
-          if (error.response.status === 500) {
+          if (error.context.status === 500) {
             alert('服务器繁忙，请耐心等待')
           }
-          if (error.response.status === 400) {
+          if (error.context.status === 400) {
             alert('用户名密码错误')
           }
           return console.log('Access Token Error', error.message);
