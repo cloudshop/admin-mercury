@@ -19,9 +19,9 @@ export default new Vuex.Store({
   mutations: {
     [types.LOGIN]: (state, data) => {
       state.token = data;
-      console.log(state);
+      // console.log(state);
       localStorage.setItem('token', JSON.stringify(data));
-      console.log("11");
+      // console.log("11");
     },
     logout:(state)=>{
       state.token = null
@@ -54,8 +54,8 @@ export default new Vuex.Store({
       let tokenPersist = localStorage.getItem('token');
       if (tokenPersist !== null) {
         let token = JSON.parse(tokenPersist);
-        console.log("token", token)
-        console.log("state", state.token)
+        // console.log("token", token)
+        // console.log("state", state.token)
         if (token !== null && state.token === null) {
           state.token = token;
         }
@@ -71,8 +71,8 @@ export default new Vuex.Store({
       let tokenPersist = localStorage.getItem('token');
       if (tokenPersist !== null) {
         let token = JSON.parse(tokenPersist);
-        console.log("token", token)
-        console.log("state", state.token)
+        // console.log("token", token)
+        // console.log("state", state.token)
         if (token !== null && state.token === null) {
           state.token = token;
         }
@@ -85,8 +85,8 @@ export default new Vuex.Store({
       let tokenPersist = localStorage.getItem('token');
       if (tokenPersist !== null) {
         let token = JSON.parse(tokenPersist);
-        console.log("token", token)
-        console.log("state", state.token)
+        // console.log("token", token)
+        // console.log("state", state.token)
         if (token !== null && state.token === null) {
           state.token = token;
         }
@@ -120,8 +120,8 @@ export default new Vuex.Store({
         },
         auth: {
           tokenHost: window.location.origin,
-          // tokenPath: 'http://app.grjf365.com:9080/auth/login/shop',
-          tokenPath: 'api/auth/login/shop',
+          tokenPath: 'http://app.grjf365.com:9080/auth/login/shop',
+          // tokenPath: 'api/auth/login/shop',
           revokePath: 'api/auth/logout/shop'
         },
         http: {
@@ -145,7 +145,7 @@ export default new Vuex.Store({
 
       oauth2.ownerPassword.getToken(tokenConfig, (error, result) => {
         if (error) {
-          console.log(error);
+          // console.log(error);
           if (error.context.status === 500) {
             alert('服务器繁忙，请耐心等待')
           }
@@ -156,7 +156,7 @@ export default new Vuex.Store({
         }
 
         const accessToken = oauth2.accessToken.create(result)
-        console.log('Access Token 2', accessToken);
+        // console.log('Access Token 2', accessToken);
         // store the token in global variable ??
         context.commit(types.LOGIN, result);
         context.commit(types.USERPHONE, userInput.username);
@@ -187,8 +187,8 @@ export default new Vuex.Store({
         },
         auth: {
           tokenHost: window.location.origin,
-          tokenPath: 'http://app.grjf365.com:9080/auth/logout',
-          // tokenPath: 'api/auth/logout/shop',
+          // tokenPath: 'http://app.grjf365.com:9080/auth/logout',
+          tokenPath: 'api/auth/logout',
           revokePath: 'api/auth/logout'
         },
         http: {
