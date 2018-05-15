@@ -23,6 +23,12 @@ export default new Vuex.Store({
       localStorage.setItem('token', JSON.stringify(data));
       console.log("11");
     },
+    logout:(state)=>{
+      state.token = null
+      state.userphone = null
+      state.password = null
+      localStorage.removeItem('token');
+    },
     [types.LOGOUT]: (state) => {
       state.token = null
       state.userphone = null
@@ -181,8 +187,9 @@ export default new Vuex.Store({
         },
         auth: {
           tokenHost: window.location.origin,
-          tokenPath: 'auth/login/shop',
-          revokePath: 'auth/logout/shop'
+          tokenPath: 'http://app.grjf365.com:9080/auth/logout',
+          // tokenPath: 'api/auth/logout/shop',
+          revokePath: 'api/auth/logout'
         },
         http: {
           headers: {
