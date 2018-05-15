@@ -34,8 +34,9 @@
         </div>
       </div>
     </el-row>
+    <p class="nodata" v-show="noData">暂无数据！</p>
     <!-- 表单展现 -->
-    <el-row>
+    <el-row  v-show="!noData">
       <el-col :span="24">
         <div class="grid-content bg-purple-dark">
           <table class="newclass" width="100%" v-loading="loading" element-loading-text="拼命加载中">
@@ -84,7 +85,7 @@
         </div>
       </el-col>
     </el-row>
-    <el-col :span="24" class="toolbar">
+    <el-col :span="24" class="toolbar" v-show="!noData">
       <el-pagination background layout="prev, pager, next" :page-size="pageSize" :total="total" :current-page="pageNum" @current-change="handleCurrentChange" @size-change="handleSizeChange" style="text-align:center;margin-top:10px;">
       </el-pagination>
     </el-col>
@@ -129,15 +130,16 @@ export default {
   name: "allOrder",
   data() {
     return {
+      noData:false,
       flat: 0,
       navs: ['全部', '待付款', '待发货', '已发货', '已完成', '已取消'],
       total: 0, //总页数
       pageNum: 1,
       pageSize: 10,
+      status:0,
       loading: false,
       editForm: {},
       editFormVisible: false,
-      ordetData: [],
       listData: [],
       input2: '',
       input21: '',
@@ -189,32 +191,38 @@ export default {
   },
   methods: {
     serching(val) {
-      this.listData = this.ordetData.filter((item) => {
+      if(val === ""){
+        this.$message({ message: "请输入订单编号!",type: "warning"});
+        return false
+      }
+      this.listData = this.listData.filter((item) => {
         return item.orderNo === val
       })
-    },
-    filterOrder(val) {
-      this.serchOrderNo = '';
-      this.flat = val;
-      if (val === 0) {
-        this.listData = this.ordetData
-      } else {
-        this.listData = this.ordetData.filter((item) => {
-          return item.status === val
-        })
+      if(this.listData.length === 0){
+        this.noData = true;
+        this.$message({ message: "订单编号不存在!",type: "warning"});
       }
-      console.log(this.listData)
+    },
+    filterOrder(index) {
+      this.serchOrderNo = '';
+      this.flat = index;
+      this.pageNum=1;
+      this.status=index;
+      this.getAllOrder();
     },
     getAllOrder() {
       this.loading = true;
       const url = 'order/api/manage/findMercuOrderByStatus'
-      this.$axios.post(url,{page:this.pageNum,size:this.pageSize,status:0})
+      this.$axios.post(url,{"page":this.pageNum,"size":this.pageSize,"status":this.status})
         .then((res) => {
-          console.log(res)
           this.listData = res.data.proOrder;
-          this.ordetData = res.data.proOrder;
           this.total = res.data.proOrderAmount;
           this.loading = false;
+          if(res.data.proOrderAmount == 0){
+            this.noData = true;
+          }else{
+            this.noData = false;
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -224,8 +232,6 @@ export default {
       this.editFormVisible = true;
       // 深拷贝并赋值
       this.editForm = Object.assign({}, row); //合并对象操作
-      // this.editForm.transfer *=100;
-      // console.log(this.editForm)
     },
     close() {
       this.editFormVisible = false;
@@ -237,19 +243,14 @@ export default {
       data.shippingName = this.editForm.shippingName;
       data.shipingCode = this.editForm.shipingCode;
 
-      // console.log(Qs.stringify(data))
       const url = 'order/api/updateOrderByShip'
       this.$confirm("确认提交吗？", "提示", {}).then(() => {
         this.loading = true;
-        // 此处应该请求数据
-
         this.editFormVisible = false;
+        // 此处应该请求数据
         this.$axios.post(url, data).then((res) => {
           setTimeout(() => {
-            this.$message({
-              message: "提交成功！",
-              type: "success"
-            });
+            this.$message({message: "提交成功！",type: "success"});
             this.loading = false;
             this.getAllOrder();
           }, 2000);
@@ -264,11 +265,9 @@ export default {
     handleDelete(row) {
       const url = 'order/api/manage/deleteOrder/'
       const data = row.id;
-      // console.log(url+data)
       this.$confirm("确认删除吗?", "提示", {}).then(() => {
         this.loading = true;
         this.$axios.get(url+data).then((res) => {
-          console.log(res.data)
           setTimeout(() => {
             this.$message({ message: "删除成功！",type: "success"});
             this.getAllOrder();
@@ -446,5 +445,8 @@ export default {
   border-color: #3a8ee6;
   background: #3a8ee6;
 }
-
+.nodata{
+  text-align:center;
+  margin:30px 0;
+}
 </style>
