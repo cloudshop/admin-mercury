@@ -26,17 +26,12 @@ export default {
                 type: "warning"
             })
                 .then(() => {
-                    // window.sessionStorage.clear()
-                    this.$axios({
-                        method: 'post',
-                        url: 'auth/logout/app'
-                    });
-                     this.$store.commit(types.LOGOUT);
-                    this.$router.push({ path: "/login" });
-                    this.$message({
-                        type: "success",
-                        message: "已退出登录!"
-                    });
+                    this.$store.commit('logout')
+                    window.sessionStorage.clear()
+                    this.$message({ message: "已退出登录!",type: "success"});
+                    setTimeout(() => {
+                        this.$router.push({ path: "/login" }); 
+                    }, 1000);
                 })
                 .catch(() => {
                     this.$message({
