@@ -76,7 +76,7 @@
                 </td>
                 <td>
                   <!-- <el-button type="primary" :disabled="item.status !== 2" size="small" @click="handleEdit(item)">修改</el-button> -->
-                  <el-button type="primary" :disabled="item.status !== 2" size="small" @click="handleEdit(item)">修改</el-button>
+                  <el-button type="primary"  size="small" @click="handleEdit(item)">修改</el-button>
                   <el-button type="danger" :disabled="item.status !== 4 && item.status !== 5" size="small" @click="handleDelete(item)">删除</el-button>
                 </td>
               </tr>
@@ -112,10 +112,15 @@
       </div>
       <div class="goods">
         <span>物流信息：</span>
-        <input type="text" class="goodsinput" v-model.trim="editForm.shippingName" placeholder="请填写物流公司名称！" />
+        <el-select v-model="editForm.shippingName" placeholder="请选择">
+          <el-option v-for="item in options" :key="item.value"  :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
+        <!-- <input type="text" class="goodsinput" v-model.trim="editForm.shippingName" placeholder="请填写物流公司名称！" /> -->
       </div>
       <div class="goods">
         <span>快递单号：</span>
+        
         <input type="text" class="goodsinput" v-model.trim="editForm.shipingCode" placeholder="请填写快递单号！" />
       </div>
       <div slot="footer" class="dialog-footer">
@@ -169,7 +174,18 @@ export default {
             picker.$emit('pick', date);
           }
         }]
-      }
+      },
+      options:[
+          {value:'shunfeng',label:'顺丰'},
+          {value:'yunda',label:'韵达快运'},
+          {value:'shentong',label:'申通'},
+          {value:'yuantong',label:'圆通速递'},
+          {value:'zhongtong',label:'中通速递'},
+          {value:'huitongkuaidi',label:'汇通快运'},
+          {value:'debangwuliu',label:'德邦物流'},
+          {value:'ems',label:'ems快递'},
+          {value:'quanfengkuaidi',label:'全峰快递'},
+       ]
     };
   },
   watch: {
@@ -238,6 +254,14 @@ export default {
     },
     // 编辑、新增弹窗 提交方法
     submit() {
+      if(this.editForm.shippingName === null){
+        this.$message.error('请选择快递公司！');
+        return false
+      }
+      if(this.editForm.shipingCode === null){
+        this.$message.error('请填写快递单号!');
+        return false
+      }
       let data = Object.create(null);
       data.orderNo = this.editForm.orderNo;
       data.shippingName = this.editForm.shippingName;
