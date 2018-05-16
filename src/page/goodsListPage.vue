@@ -131,6 +131,9 @@ export default {
         this.$message.error("请填写数字!");
         this.editForm.transfer ='';
         return false
+      }else if(Math.trunc(val)>98){
+        this.$message.error("不能大于98%!");
+        this.editForm.transfer ='';
       }
     },
     checkPrice(val) {
@@ -216,7 +219,8 @@ export default {
       data.id = this.editForm.skuId;
       data.price = this.editForm.price;
       data.count = this.editForm.count;
-      data.profit = this.editForm.transfer;
+      data.profit = (Number(this.editForm.transfer) >=12 ) ? (Number(this.editForm.transfer)-2) : 10
+
       const url = 'product/api/product/handle/'
       this.$confirm("确认提交吗？", "提示", {}).then(() => {
         this.loading = true;
