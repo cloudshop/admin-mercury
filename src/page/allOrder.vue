@@ -231,6 +231,7 @@ export default {
       const url = 'order/api/manage/findMercuOrderByStatus'
       this.$axios.post(url,{"page":this.pageNum,"size":this.pageSize,"status":this.status})
         .then((res) => {
+          // console.log(res)
           this.listData = res.data.proOrder;
           this.total = res.data.proOrderAmount;
           this.loading = false;
