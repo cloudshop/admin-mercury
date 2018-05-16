@@ -76,7 +76,7 @@
                 </td>
                 <td>
                   <!-- <el-button type="primary" :disabled="item.status !== 2" size="small" @click="handleEdit(item)">修改</el-button> -->
-                  <el-button type="primary"  size="small" @click="handleEdit(item)">修改</el-button>
+                  <el-button type="primary" :disabled="item.status !== 2"   size="small" @click="handleEdit(item)">修改</el-button>
                   <el-button type="danger" :disabled="item.status !== 4 && item.status !== 5" size="small" @click="handleDelete(item)">删除</el-button>
                 </td>
               </tr>
@@ -176,15 +176,15 @@ export default {
         }]
       },
       options:[
-          {value:'shunfeng',label:'顺丰'},
-          {value:'yunda',label:'韵达快运'},
-          {value:'shentong',label:'申通'},
-          {value:'yuantong',label:'圆通速递'},
-          {value:'zhongtong',label:'中通速递'},
-          {value:'huitongkuaidi',label:'汇通快运'},
-          {value:'debangwuliu',label:'德邦物流'},
-          {value:'ems',label:'ems快递'},
-          {value:'quanfengkuaidi',label:'全峰快递'},
+          {value:'顺丰',label:'顺丰'},
+          {value:'韵达快运',label:'韵达快运'},
+          {value:'申通',label:'申通'},
+          {value:'圆通速递',label:'圆通速递'},
+          {value:'中通速递',label:'中通速递'},
+          {value:'汇通快运',label:'汇通快运'},
+          {value:'德邦物流',label:'德邦物流'},
+          {value:'ems快递',label:'ems快递'},
+          {value:'全峰快递',label:'全峰快递'},
        ]
     };
   },
