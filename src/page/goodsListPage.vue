@@ -9,7 +9,7 @@
       <el-table-column prop="price" label="商品单价" width="100">
         <template slot-scope="scope">{{scope.row.price+'元'}}</template>
       </el-table-column>
-      <el-table-column prop="transfer" label="让利 %" width="80">
+      <el-table-column prop="transfer" label="服务费 %" width="80">
         <template slot-scope="scope">{{scope.row.transfer * 100}}</template>
       </el-table-column>
       <el-table-column prop="count" label="库存" width="80">
@@ -47,8 +47,8 @@
         <input type="text" class="goodsinput" v-model.trim="editForm.price" @keyup.stop="CheckSkuPrice(editForm.price)" @blur="checkPrice(editForm.price)" placeholder="商品单价" />
       </div>
       <div class="goods">
-        <span>让利 %</span>
-        <input type="text" class="goodsinput" v-model.trim="editForm.transfer" @keyup.stop="CheckTransfer(editForm.transfer)" @blur="CheckTransfer2(editForm.transfer)" placeholder="商品让利" />
+        <span>服务费 %</span>
+        <input type="text" class="goodsinput" v-model.trim="editForm.transfer" @keyup.stop="CheckTransfer(editForm.transfer)" @blur="CheckTransfer2(editForm.transfer)" placeholder="商品服务费" />
       </div>
       <div class="goods">
         <span>库存</span>
@@ -122,7 +122,7 @@ export default {
       let reg = /[^\d]+$/g;
       this.editForm.transfer=this.editForm.transfer.replace(reg,'');
       if (this.editForm.transfer.length>=3) {
-        this.$message.error('商品让利不能超过100%!');
+        this.$message.error('商品服务费不能超过100%!');
         this.editForm.transfer='';
       }
     },

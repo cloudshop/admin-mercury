@@ -47,13 +47,13 @@
             <tr>
               <th width="14%" v-for="(item,index) in goodsClass" v-show="item.attr || item.attr != ''">{{item.attr }}</th>
               <th width="18%">商品价格</th>
-              <th width="18%">让利(%)</th>
+              <th width="18%">服务费(%)</th>
               <th width="18%">库存</th>
               <th width="18%">商品编号</th>
             </tr>
           </thead>
           <tbody>
-            <!-- 商品单价、让利、库存、货号列表 -->
+            <!-- 商品单价、服务费、库存、货号列表 -->
             <tr v-for="(item,index) in goodsList">
               <td>{{item.attrValue}}</td>
               <td v-if="item.AnotherValue ">{{item.AnotherValue}}</td>
@@ -188,7 +188,7 @@ export default {
       // secondIndex: '', //二级分类下标
       // thirdCategory: '', //二级&&三级分类(数据)
       goodsList: [],
-      /*/创建商品规格所生成的列表"attr": "颜色","attrValue": "白色","attrAnother": "内存","AnotherValue": "128G","skuPrice": "22元","transfer": "让利",skuCount": "库存",skuCode": "商品编码"*/
+      /*/创建商品规格所生成的列表"attr": "颜色","attrValue": "白色","attrAnother": "内存","AnotherValue": "128G","skuPrice": "22元","transfer": "服务费",skuCount": "库存",skuCode": "商品编码"*/
       goodsName: '', //商品名
       goodsPrice: 0, //商品价格
       goodsNumber: 0, //商品货号
@@ -317,7 +317,7 @@ export default {
       }
       var num =Math.trunc(val).toString();
       if (num.length > 2) {
-        this.$message.error('商品让利不能超过100%!');
+        this.$message.error('商品服务费不能超过100%!');
         this.goodsList[index].transfer='';
         return false
       }
