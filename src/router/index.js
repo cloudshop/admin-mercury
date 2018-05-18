@@ -58,7 +58,10 @@ const router = new Router({
         children: [{
             path: '/sllerIndex',
             name: '商家首页',
-            component: sllerIndex
+            component: sllerIndex,
+            meta: {
+                requireAuth: true, 
+            }
         }]
     },  
     {
@@ -114,10 +117,15 @@ const router = new Router({
     ]
 })
 
+if (window.localStorage.getItem('token')) {
+    var token= JSON.parse(window.localStorage.getItem('token'))
+    store.commit(types.LOGIN, token)
+}
+
 router.beforeEach((to, from, next) => {
-    if (to.matched.some(r => r.meta.requireAuth)) {
-        console.log(store.state.token)
-        if (store.state.token) {
+    if (to.meta.requireAuth) {
+        // console.log(store.state.token)
+        if (window.sessionStorage.getItem('name') !== null) {
             next();
         }
         else {

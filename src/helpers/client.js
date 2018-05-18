@@ -74,7 +74,7 @@ function login(userInput) {
         }
 
         const accessToken = oauth2.accessToken.create(result)
-        console.log('Access Token 2', accessToken);
+        // console.log('Access Token 2', accessToken);
         // store the token in global variable ??
         store.commit(types.LOGIN, result);
         var val = {
@@ -153,7 +153,7 @@ function shouldRefresh(accessToken) {
 }
 
 function bearToken(token) {
-    console.log(token)
+    // console.log(token)
     if (token !== null && typeof token.access_token !== "undefined") {
         return 'Bearer '.concat(token.access_token);
     }
@@ -246,7 +246,7 @@ axios.interceptors.response.use(
                     })
             }
         }
-        console.log(JSON.stringify(error));//console : Error: Request failed with status code 402
+        // console.log(JSON.stringify(error));//console : Error: Request failed with status code 402
         return Promise.reject(error);
     });
 
