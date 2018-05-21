@@ -152,7 +152,10 @@
       </div>
     </div>
      <div class="goodcontent" v-show="active === 3"> 
-      <p style="text-align:center">上传商品图片</p>
+       <div class="successful">
+          <h2>恭喜您，商品发布成功！</h2>
+          <p >您可以查看商品列表或者继续发布商品</p>
+        </div>
     </div>
     <el-row type="flex" class="row-bg" justify="center" style="padding: 20px 0;">
       <el-button class="selfbtn" type="primary" @click="submitForm" v-show="active === 0">下一步</el-button>
@@ -930,5 +933,8 @@ export default {
   height: 120px;
   line-height: 120px;
 }
-
+.successful{
+  margin: 200px 0;
+  text-align: center;
+}
 </style>
