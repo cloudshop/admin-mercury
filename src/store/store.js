@@ -120,7 +120,7 @@ export default new Vuex.Store({
         },
         auth: {
           tokenHost: window.location.origin,
-        //   tokenPath: 'http://app.grjf365.com:9080/auth/login/shop',
+          // tokenPath: 'http://app.grjf365.com:9080/auth/login/shop',
            tokenPath: 'api/auth/login/shop',
           revokePath: 'api/auth/logout/shop'
         },
@@ -145,37 +145,24 @@ export default new Vuex.Store({
 
       oauth2.ownerPassword.getToken(tokenConfig, (error, result) => {
         if (error) {
-          // console.log(error);
           if (error.context.status === 500) {
-            alert('服务器繁忙，请耐心等待')
+            // alert('服务器繁忙，请耐心等待')
+            return false
           }
           if (error.context.status === 400) {
-            alert('用户名密码错误')
+            // alert('用户名密码错误')
+             return false
           }
-          return console.log('Access Token Error', error.message);
+          // console.log('Access Token Error', error.message);
+          return false
         }
-
+        
         const accessToken = oauth2.accessToken.create(result)
-        // console.log('Access Token 2', accessToken);
-        // store the token in global variable ??
+        
         context.commit(types.LOGIN, result);
         context.commit(types.USERPHONE, userInput.username);
         context.commit(types.PASSWORD, userInput.password);
-        var val = {
-          "func": "closeCurrent",
-          "param": {
-            'finallyIndex': '1',
-            'refreshAll': true
-          },
-        };
-        var u = navigator.userAgent;
-        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; // android终端
-        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); // ios终端
-        if (isiOS) {
-          window.webkit.messageHandlers.GongrongAppModel.postMessage(val);
-        } else if (isAndroid) {
-          window.androidObject.JSCallAndroid(JSON.stringify(val));
-        }
+      
       });
     },
 
