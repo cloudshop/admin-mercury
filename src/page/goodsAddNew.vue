@@ -553,13 +553,20 @@ export default {
       //   return false
       // }
       //api 地址
-     
+      let istras = this.goodsList.every((item)=>{
+        return ( Number(item.transfer)>=12)
+         
+      })
+      if(istras === false){
+        this.$message.error("商品服务费不能小于12%");
+        return false
+      }
       let result= this.goodsList.map((item)=>{
         item.transfer =( Number(item.transfer)>=12)?(Number(item.transfer)-2):10
         return item
       })
-      console.log(result,'res')
-      console.log(this.goodsList,'abc')
+      // console.log(result,'res')
+      // console.log(this.goodsList,'abc')
       let url = 'product/api/product/publish';
       //创建提交data对象
       let data = Object.create(null);
@@ -575,7 +582,7 @@ export default {
       // data.freight     = this.goodsFreight ;       //商品物流信息 （运费）
       data.address = ""; //商品所在地
       data.attr = result; //商品列表
-      console.log(data,123);
+      // console.log(data,123);
       this.$axios.post(url, data, ).then((res) => {
         // console.log(res.data)
         let data = res.data;
@@ -616,7 +623,7 @@ export default {
           }, 2000);
         }
       }).catch((err) => {
-        console.log(err)
+        // console.log(err)
         this.$message.error("商品图片上传失败，请检查图片是否合规！");
         return false
       })
