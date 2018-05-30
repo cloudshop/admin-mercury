@@ -132,9 +132,13 @@ export default {
         this.editForm.transfer ='';
         return false
       }else if(Math.trunc(val)>98){
-        this.$message.error("不能大于98%!");
+        this.$message.error("商品服务费不能大于98%!");
         this.editForm.transfer ='';
+      }else if(Math.trunc(val)< 12){
+        this.$message.error("商品服务费不能小于12%!");
+        return false
       }
+      
     },
     checkPrice(val) {
       if(Number.isNaN(Math.trunc(val))){
@@ -219,6 +223,10 @@ export default {
       data.id = this.editForm.skuId;
       data.price = this.editForm.price;
       data.count = this.editForm.count;
+      if(this.editForm.transfer< 12){
+        this.$message.error("商品服务费不能小于12%!");
+        return false
+      }
       data.profit = (Number(this.editForm.transfer) >=12 ) ? (Number(this.editForm.transfer)-2) : 10
 
       const url = 'product/api/product/handle/'
