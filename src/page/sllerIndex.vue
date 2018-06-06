@@ -35,6 +35,7 @@
         <img v-if="imageUrl" :src="imageUrl" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
+      <p class="imgsize">图片尺寸为:750*294像素，大小不超过100k</p>
       <!-- <el-dialog :visible.sync="dialogVisible">
               <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog> -->
@@ -67,12 +68,12 @@ export default {
   },
   methods: {
     submitAddress(shopId){
-      console.log(shopId);
-      console.log(this.address);
+      // console.log(shopId);
+      // console.log(this.address);
       const url = 'user/api/mercuries/updateBackgroundMercuryInfo';
       this.$axios.put(url,{id:shopId,city:this.address})
         .then((res) => {
-          console.log(res);
+          // console.log(res);
         })
         .catch((error) => {
           console.log(error);
@@ -83,9 +84,9 @@ export default {
       const url = 'user/api/mercuries/usermercurie'
       this.$axios.get(url)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           this.userData = res.data;
-          console.log(this.userData);
+          // console.log(this.userData);
           this.createdTime =  this.userData.createdTime.split('T')[0];
           this.address = this.userData.city;
         })
@@ -101,19 +102,19 @@ export default {
     handleAvatarSuccess(res, file) {
       this.imageUrl = URL.createObjectURL(file.raw);
       this.mainimageUrl = res[0];
-      console.log(this.mainimageUrl)
+      // console.log(this.mainimageUrl)
     },
     beforeAvatarUpload(file) {
       const isJPEG = file.type === 'image/jpeg';
       const isJPG = file.type === 'image/jpg';
       const isPNG = file.type === 'image/png';
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 < 100;
       if (!isJPEG && !isJPG && !isPNG) {
         this.$message.error('上传图片只能是 JPEG、JPG、PNG 格式!');
         return false
       }
       if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
+        this.$message.error('上传图片大小不能超过 100KB !');
         return false
       }
     },
@@ -129,6 +130,10 @@ export default {
       this.$confirm("确认提交吗？", "提示", {}).then(() => {
         this.loading = true;
         // 此处应该请求数据
+        if(this.mainimageUrl == ''){
+          this.$message.error('上传图片不能为空!');
+          return false
+        }else{
         // console.log(123)
         this.$axios.put(url, { 'imgIntroduces': this.mainimageUrl }).then((res) => {
           setTimeout(() => {
@@ -144,6 +149,7 @@ export default {
           this.editFormVisible = false;
           this.loading = false;
         })
+      }
       });
     },
   }
@@ -292,5 +298,9 @@ export default {
   text-align: center;
   margin: 100px 0;
 }
-
+.imgsize{
+  color: #ff6161;
+  text-align: center;
+  margin-top: 30px;
+}
 </style>
