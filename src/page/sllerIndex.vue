@@ -118,8 +118,8 @@ export default {
             this.$message({ message: "提交成功！", type: "success" });
             this.mainimageUrl = '';
             this.imageUrl = '';
-            this.loading = false;
             this.getUserData();
+            this.loading = false;
           }, 1000);
           this.editFormVisible = false;
         }).catch((err) => {
