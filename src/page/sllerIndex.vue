@@ -90,6 +90,7 @@ export default {
         setTimeout(()=>{
           this.$axios.put(url,{id:shopId,city:this.address})
         .then((res) => {
+            this.getUserData()
           // console.log(res);
         })
         .catch((error) => {
