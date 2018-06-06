@@ -8,8 +8,8 @@
             <h2 class="flexbox"><span class="shoptitle">店铺名称：</span><span>{{userData.name}}</span></h2>
             <h2 class="flexbox"><span class="shoptitle">注册时间：</span><span>{{createdTime}}</span></h2>
             <h2 class="flexbox"><span class="shoptitle">所在地：</span>
-              <!-- <span>{{userData.provice + '    ' + userData.city + '    ' + userData.street}}</span> -->
-              <input type="text" v-model="address" class="address"><button @click="submitAddress(userData.id)" class="submit">提交</button>
+              <span>{{userData.city}}</span>
+              <el-button type="primary" style="margin-left:50px;" size="small" @click="reeditShopAddr" >修改地址</el-button>
             </h2>
             <!-- <h2><span>管理权限：</span>{{item}}</h2> -->
             <!-- <h2><span>更换头像：</span></h2> -->
@@ -28,6 +28,17 @@
         </div>
       </el-col>
     </el-row>
+    <!-- 编辑 -->
+    <el-dialog title="修改地址" :visible.sync="editShopAddress" width="30%">
+      
+        <span class="goodsspan1">请填写新的地址：</span>
+        <span>{{address}}</span>
+      <el-input v-model="address" placeholder="请输入内容"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeEditShopAddr">取消</el-button>
+        <el-button type="primary" @click="submitAddress" :loading="loading" class="title1">提交</el-button>
+      </div>
+    </el-dialog>
     <!--编辑界面-->
     <el-dialog title="编辑店铺背景" :visible.sync="editFormVisible" width="30%">
       <span>请选择图片</span>
@@ -56,6 +67,7 @@ export default {
       ossUploadUrl: 'http://app.grjf365.com/api/file/api/ossUpload',
       noInfo: false,
       userData: {},
+      editShopAddress:false,
       editFormVisible: false,
       loading: false,
       mainimageUrl: '',
@@ -67,17 +79,28 @@ export default {
     this.getUserData()
   },
   methods: {
-    submitAddress(shopId){
-      // console.log(shopId);
-      // console.log(this.address);
+    submitAddress(){
+      let shopId = this.userData.id;
       const url = 'user/api/mercuries/updateBackgroundMercuryInfo';
-      this.$axios.put(url,{id:shopId,city:this.address})
+      if(this.address == ''){
+        this.$message.error('地址不能为空！');
+        return false
+      }
+      this.$confirm("确认提交吗？", "提示", {}).then(() => {
+        setTimeout(()=>{
+          this.$axios.put(url,{id:shopId,city:this.address})
         .then((res) => {
           // console.log(res);
         })
         .catch((error) => {
           console.log(error);
         })
+        },1000)
+      });
+      // console.log(shopId);
+      // console.log(this.address);
+     
+      
     },
     getUserData() {
       // const url = 'http://cloud.eyun.online:9080/user/api/mercuries/usermercurie'
@@ -88,13 +111,13 @@ export default {
           this.userData = res.data;
           // console.log(this.userData);
           this.createdTime =  this.userData.createdTime.split('T')[0];
-          this.address = this.userData.city;
         })
         .catch((error) => {
           this.noInfo = true
           this.$message("获取信息失败");
         })
     },
+
     // handlePictureCardPreview(file) {
     //    this.dialogImageUrl = file.url;
     //    this.dialogVisible = true;
@@ -117,6 +140,12 @@ export default {
         this.$message.error('上传图片大小不能超过 100KB !');
         return false
       }
+    },
+    reeditShopAddr(){
+      this.editShopAddress = true;
+    },
+    closeEditShopAddr(){
+      this.editShopAddress = false;
     },
     handleEdit() {
       this.editFormVisible = true;
@@ -226,7 +255,7 @@ export default {
   font-size: 16px;
   font-weight: normal;
   padding: 0;
-  margin-bottom: 26px;
+  line-height: 30px;
 }
 
 .shoptitle {
@@ -293,7 +322,12 @@ export default {
 .avatar-uploader .el-upload {
   border: 1px dashed #949494
 }
-
+.goods {
+  height: 40px;
+  display: flex;
+  margin-bottom: 20px;
+  position: relative;
+}
 .no-info {
   text-align: center;
   margin: 100px 0;
