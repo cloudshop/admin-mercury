@@ -6,9 +6,11 @@
         <div class="grid-content ">
           <div class="shop-info" v-show="!noInfo">
             <h2 class="flexbox"><span class="shoptitle">店铺名称：</span><span>{{userData.name}}</span></h2>
-            <h2 class="flexbox"><span class="shoptitle">注册时间：</span><span>{{userData.createdTime}}</span></h2>
+            <h2 class="flexbox"><span class="shoptitle">注册时间：</span><span>{{createdTime}}</span></h2>
             <h2 class="flexbox"><span class="shoptitle">所在地：</span>
-                <span>{{userData.provice + '    ' + userData.city + '    ' + userData.street}}</span></h2>
+              <!-- <span>{{userData.provice + '    ' + userData.city + '    ' + userData.street}}</span> -->
+              <input type="text" v-model="address" class="address"><button @click="submitAddress(userData.id)" class="submit">提交</button>
+            </h2>
             <!-- <h2><span>管理权限：</span>{{item}}</h2> -->
             <!-- <h2><span>更换头像：</span></h2> -->
             <div class="flexbox shopimg">
@@ -56,13 +58,26 @@ export default {
       editFormVisible: false,
       loading: false,
       mainimageUrl: '',
-      imageUrl: ''
+      imageUrl: '',
+      address:''
     };
   },
   created() {
     this.getUserData()
   },
   methods: {
+    submitAddress(shopId){
+      console.log(shopId);
+      console.log(this.address);
+      const url = 'user/api/mercuries/updateBackgroundMercuryInfo';
+      this.$axios.put(url,{id:shopId,city:this.address})
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+    },
     getUserData() {
       // const url = 'http://cloud.eyun.online:9080/user/api/mercuries/usermercurie'
       const url = 'user/api/mercuries/usermercurie'
@@ -70,7 +85,9 @@ export default {
         .then((res) => {
           console.log(res)
           this.userData = res.data;
-          console.log(this.userData)
+          console.log(this.userData);
+          this.createdTime =  this.userData.createdTime.split('T')[0];
+          this.address = this.userData.city;
         })
         .catch((error) => {
           this.noInfo = true
@@ -133,7 +150,25 @@ export default {
 };
 
 </script>
+
 <style scoped>
+.flexbox .address{
+  line-height: 1rem;
+  outline: none;
+  padding: 0 5px; 
+  border-radius: 3px;
+  border: 1px solid #bbb;
+  background: #f5f5f5;
+}
+.flexbox .submit{
+  background: #409EFF;
+  padding: 0.3rem 1rem;
+  border: 0;
+  border-radius: 3px;
+  color: #fff;
+  margin-left: 5px;
+}
+
 .header-table {
   text-align: left;
 }
