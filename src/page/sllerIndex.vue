@@ -87,6 +87,7 @@ export default {
           this.userData = res.data;
           console.log(this.userData);
           this.createdTime =  this.userData.createdTime.split('T')[0];
+          this.address = this.userData.city;
         })
         .catch((error) => {
           this.noInfo = true
@@ -154,9 +155,10 @@ export default {
 .flexbox .address{
   line-height: 1rem;
   outline: none;
-  padding-right: 10px; 
+  padding: 0 5px; 
   border-radius: 3px;
   border: 1px solid #bbb;
+  background: #f5f5f5;
 }
 .flexbox .submit{
   background: #409EFF;
