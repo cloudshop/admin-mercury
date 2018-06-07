@@ -90,6 +90,8 @@ export default {
         setTimeout(()=>{
           this.$axios.put(url,{id:shopId,city:this.address})
         .then((res) => {
+            this.address="";
+            this.editShopAddress = false;
             this.getUserData()
           // console.log(res);
         })
@@ -337,5 +339,9 @@ export default {
   color: #ff6161;
   text-align: center;
   margin-top: 30px;
+}
+.goodsspan1{
+  margin-bottom: 20px;
+  display: inline-block;
 }
 </style>
